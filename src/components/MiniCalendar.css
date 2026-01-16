@@ -1,0 +1,130 @@
+.mini-calendar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-6);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    margin-bottom: var(--spacing-6);
+}
+
+.mini-calendar-header {
+    margin-bottom: var(--spacing-4);
+    padding-bottom: var(--spacing-4);
+    border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+}
+
+.current-date {
+    text-align: center;
+}
+
+.solar-date {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: var(--spacing-2);
+}
+
+.month-year {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    margin-bottom: var(--spacing-2);
+}
+
+.lunar-date {
+    font-size: var(--font-size-base);
+    color: #f093fb;
+    font-weight: 500;
+    font-style: italic;
+}
+
+.week-view {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--spacing-2);
+}
+
+.day-item {
+    text-align: center;
+    padding: var(--spacing-3) var(--spacing-2);
+    border-radius: var(--radius-md);
+    background: rgba(102, 126, 234, 0.05);
+    transition: all var(--transition-base);
+}
+
+.day-item:hover {
+    background: rgba(102, 126, 234, 0.1);
+    transform: translateY(-2px);
+}
+
+.day-item.today {
+    background: linear-gradient(135deg,
+            rgba(102, 126, 234, 0.2),
+            rgba(118, 75, 162, 0.2));
+    border: 2px solid #667eea;
+    font-weight: 600;
+}
+
+.day-name {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: var(--spacing-1);
+}
+
+.day-number {
+    font-size: var(--font-size-xl);
+    color: var(--color-text-primary);
+    font-weight: 600;
+    margin-bottom: var(--spacing-1);
+}
+
+.day-item.today .day-number {
+    color: #667eea;
+}
+
+.day-lunar {
+    font-size: var(--font-size-xs);
+    color: #f093fb;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .mini-calendar {
+        padding: var(--spacing-4);
+    }
+
+    .solar-date {
+        font-size: 2rem;
+    }
+
+    .month-year {
+        font-size: var(--font-size-base);
+    }
+
+    .lunar-date {
+        font-size: var(--font-size-sm);
+    }
+
+    .day-item {
+        padding: var(--spacing-2);
+    }
+
+    .day-name {
+        font-size: 0.65rem;
+    }
+
+    .day-number {
+        font-size: var(--font-size-base);
+    }
+
+    .day-lunar {
+        font-size: 0.65rem;
+    }
+}
