@@ -1,19 +1,12 @@
-import { useState } from 'react'
-import LearningPage from './pages/LearningPage'
-import Calendar from './components/Calendar'
-import quotes from './data/quotes'
-import { getThemeForMonth } from './data/monthlyThemes'
+import { Suspense, lazy, useState } from 'react'
 import './App.css'
 
-function App() {
-  const [currentView, setCurrentView] = useState('learning'); // 'learning' or 'calendar'
-  const [currentMonthTheme, setCurrentMonthTheme] = useState(
-    getThemeForMonth(new Date().getMonth() + 1)
-  );
+// Lazy load LearningPage for better performance
+const LearningPage = lazy(() => import('./pages/LearningPage'));
+const MillionaireGame = lazy(() => import('./pages/MillionaireGame'));
 
-  const handleMonthChange = (month) => {
-    setCurrentMonthTheme(getThemeForMonth(month));
-  };
+function App() {
+  const [currentView, setCurrentView] = useState('learning'); // 'learning' or 'game'
 
   return (
     <>
@@ -26,33 +19,21 @@ function App() {
           📚 Học tập
         </button>
         <button
-          className={`view-btn ${currentView === 'calendar' ? 'active' : ''}`}
-          onClick={() => setCurrentView('calendar')}
+          className={`view-btn ${currentView === 'game' ? 'active' : ''}`}
+          onClick={() => setCurrentView('game')}
         >
-          📅 Lịch
+          🎮 Trò chơi
         </button>
       </div>
 
-      {/* Conditional Rendering */}
-      {currentView === 'learning' ? (
-        <LearningPage />
-      ) : (
-        <div className="app">
-          <div className="app-background"></div>
-          <div className="app-content">
-            <header className="app-header">
-              <h1 className="app-title">Lịch Triết Học Mác-Lênin</h1>
-              <p className="app-subtitle">365 Ngày với Tư Tưởng Cách Mạng</p>
-            </header>
-
-            <Calendar quotes={quotes} onMonthChange={handleMonthChange} />
-
-            <footer className="app-footer">
-              <p className="footer-theme">Chủ đề tháng: {currentMonthTheme}</p>
-            </footer>
-          </div>
+      <Suspense fallback={
+        <div className="loading-fallback">
+          <div className="loading-spinner"></div>
+          <p>Đang tải...</p>
         </div>
-      )}
+      }>
+        {currentView === 'learning' ? <LearningPage /> : <MillionaireGame />}
+      </Suspense>
     </>
   )
 }

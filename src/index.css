@@ -184,10 +184,12 @@ body {
 
 .animate-fade-in {
   animation: fadeIn var(--transition-base) ease-out;
+  will-change: opacity, transform;
 }
 
 .animate-slide-in {
   animation: slideIn var(--transition-base) ease-out;
+  will-change: opacity, transform;
 }
 
 /* Scrollbar Styling */

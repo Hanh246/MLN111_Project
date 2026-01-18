@@ -5,10 +5,17 @@ import monthlyLessons from '../data/monthlyLessons';
 import './LearningPage.css';
 
 function LearningPage() {
-    const currentMonth = new Date().getMonth() + 1; // 1-12
-    const [selectedMonth, setSelectedMonth] = useState(currentMonth);
+    const [currentDate, setCurrentDate] = useState(new Date());
+    const selectedMonth = currentDate.getMonth() + 1; // 1-12, derived from currentDate
 
     const lesson = monthlyLessons.find(l => l.month === selectedMonth) || monthlyLessons[0];
+
+    // Handle month button clicks
+    const handleMonthSelect = (month) => {
+        const newDate = new Date(currentDate);
+        newDate.setMonth(month - 1);
+        setCurrentDate(newDate);
+    };
 
     return (
         <div className="learning-page">
@@ -18,8 +25,8 @@ function LearningPage() {
             <div className="learning-content">
                 {/* Header with Title and Clock */}
                 <header className="learning-header">
-                    <h1 className="learning-title">Lịch Triết Học Mác-Lênin</h1>
-                    <p className="learning-subtitle">Khóa học 12 tháng</p>
+                    <h1 className="learning-title">365 Ngày Với Mác-Lênin</h1>
+                    <p className="learning-subtitle">Một Năm Hành Trình Triết Học Cách Mạng</p>
                     <Clock />
                 </header>
 
@@ -29,7 +36,7 @@ function LearningPage() {
                         <button
                             key={l.month}
                             className={`month-btn ${selectedMonth === l.month ? 'active' : ''}`}
-                            onClick={() => setSelectedMonth(l.month)}
+                            onClick={() => handleMonthSelect(l.month)}
                         >
                             Tháng {l.month}
                         </button>
@@ -37,7 +44,7 @@ function LearningPage() {
                 </div>
 
                 {/* Mini Calendar with Lunar Dates */}
-                <MiniCalendar />
+                <MiniCalendar currentDate={currentDate} setCurrentDate={setCurrentDate} />
 
                 {/* Lesson Content */}
                 <div className="lesson-container">

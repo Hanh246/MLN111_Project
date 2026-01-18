@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import './DayCell.css';
 
-function DayCell({ day, isToday, quote }) {
+const DayCell = memo(function DayCell({ day, isToday, quote }) {
     const [isHovered, setIsHovered] = useState(false);
 
     if (!day) {
@@ -24,6 +24,6 @@ function DayCell({ day, isToday, quote }) {
             )}
         </div>
     );
-}
+});
 
 export default DayCell;

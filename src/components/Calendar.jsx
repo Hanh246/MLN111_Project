@@ -1,17 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import DayCell from './DayCell';
+import { MONTH_NAMES, DAY_NAMES } from '../utils/constants';
 import './Calendar.css';
 
 function Calendar({ quotes, onMonthChange }) {
     const [currentDate, setCurrentDate] = useState(new Date());
-
-    const monthNames = [
-        'Tháng Một', 'Tháng Hai', 'Tháng Ba', 'Tháng Tư',
-        'Tháng Năm', 'Tháng Sáu', 'Tháng Bảy', 'Tháng Tám',
-        'Tháng Chín', 'Tháng Mười', 'Tháng Mười Một', 'Tháng Mười Hai'
-    ];
-
-    const dayNames = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
 
     // Notify parent when month changes
     useEffect(() => {
@@ -20,36 +13,37 @@ function Calendar({ quotes, onMonthChange }) {
         }
     }, [currentDate, onMonthChange]);
 
-    const getDaysInMonth = (date) => {
-        const year = date.getFullYear();
-        const month = date.getMonth();
+    // Memoize expensive date calculations
+    const days = useMemo(() => {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
         const daysInMonth = lastDay.getDate();
         const startingDayOfWeek = firstDay.getDay();
 
-        const days = [];
+        const result = [];
 
         // Add empty cells for days before the first day of month
         for (let i = 0; i < startingDayOfWeek; i++) {
-            days.push(null);
+            result.push(null);
         }
 
         // Add all days of the month
         for (let day = 1; day <= daysInMonth; day++) {
-            days.push(day);
+            result.push(day);
         }
 
-        return days;
-    };
+        return result;
+    }, [currentDate]);
 
-    const goToPreviousMonth = () => {
-        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
-    };
+    const goToPreviousMonth = useCallback(() => {
+        setCurrentDate(prev => new Date(prev.getFullYear(), prev.getMonth() - 1));
+    }, []);
 
-    const goToNextMonth = () => {
-        setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1));
-    };
+    const goToNextMonth = useCallback(() => {
+        setCurrentDate(prev => new Date(prev.getFullYear(), prev.getMonth() + 1));
+    }, []);
 
     const isToday = (day) => {
         const today = new Date();
@@ -58,13 +52,12 @@ function Calendar({ quotes, onMonthChange }) {
             currentDate.getFullYear() === today.getFullYear();
     };
 
-    const getQuoteForDay = (day) => {
+    const getQuoteForDay = useCallback((day) => {
         if (!day) return null;
         const month = currentDate.getMonth() + 1; // 1-12
         return quotes.find(q => q.month === month && q.day === day);
-    };
+    }, [currentDate, quotes]);
 
-    const days = getDaysInMonth(currentDate);
     const month = currentDate.getMonth();
     const year = currentDate.getFullYear();
 
@@ -79,7 +72,7 @@ function Calendar({ quotes, onMonthChange }) {
                     ‹
                 </button>
                 <h2 className="calendar-title">
-                    {monthNames[month]} {year}
+                    {MONTH_NAMES[month]} {year}
                 </h2>
                 <button
                     className="nav-button"
@@ -91,7 +84,7 @@ function Calendar({ quotes, onMonthChange }) {
             </div>
 
             <div className="calendar-grid">
-                {dayNames.map((dayName) => (
+                {DAY_NAMES.map((dayName) => (
                     <div key={dayName} className="day-name">
                         {dayName}
                     </div>

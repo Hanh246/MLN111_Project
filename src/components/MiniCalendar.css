@@ -12,10 +12,44 @@
     margin-bottom: var(--spacing-4);
     padding-bottom: var(--spacing-4);
     border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .current-date {
     text-align: center;
+    flex: 1;
+}
+
+/* Navigation buttons */
+.nav-buttons {
+    display: flex;
+    gap: var(--spacing-2);
+}
+
+.nav-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    background: rgba(255, 255, 255, 0.5);
+    color: #667eea;
+    font-size: 1.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nav-btn:hover {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-color: transparent;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .solar-date {
@@ -95,6 +129,195 @@
     font-weight: 500;
 }
 
+/* Quote indicator */
+.day-item.has-quote,
+.grid-day-item.has-quote {
+    position: relative;
+    cursor: pointer;
+}
+
+.day-item.has-quote::after,
+.grid-day-item.has-quote::after {
+    content: '💭';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 0.75rem;
+    opacity: 0.6;
+}
+
+/* Quote Tooltip */
+.quote-tooltip {
+    position: absolute;
+    bottom: 110%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.98), rgba(118, 75, 162, 0.98));
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: var(--spacing-4);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    z-index: 100;
+    min-width: 250px;
+    max-width: 350px;
+    animation: tooltipFadeIn 0.3s ease-out;
+    pointer-events: none;
+}
+
+.quote-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: rgba(118, 75, 162, 0.98);
+}
+
+.quote-text {
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-2);
+    font-style: italic;
+}
+
+.quote-author {
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    text-align: right;
+    opacity: 0.9;
+}
+
+@keyframes tooltipFadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Expand Button - Simplified */
+.expand-btn-simple {
+    width: 40px;
+    height: 40px;
+    margin: var(--spacing-3) auto 0;
+    display: block;
+    background: transparent;
+    color: #667eea;
+    border: none;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    opacity: 0.7;
+}
+
+.expand-btn-simple:hover {
+    opacity: 1;
+    background: rgba(102, 126, 234, 0.1);
+    transform: scale(1.2);
+}
+
+.expand-btn-simple:active {
+    transform: scale(1);
+}
+
+/* Month View - Expandable */
+.month-view {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0;
+    margin-top: 0;
+}
+
+.month-view.expanded {
+    max-height: 1000px;
+    opacity: 1;
+    margin-top: var(--spacing-4);
+}
+
+.month-grid-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--spacing-2);
+    margin-bottom: var(--spacing-3);
+    padding: var(--spacing-3);
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: var(--radius-md);
+}
+
+.grid-day-name {
+    text-align: center;
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-primary);
+    text-transform: uppercase;
+}
+
+.month-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--spacing-2);
+}
+
+.grid-day-item {
+    background: rgba(255, 255, 255, 0.6);
+    padding: var(--spacing-3);
+    border-radius: var(--radius-md);
+    text-align: center;
+    transition: all var(--transition-base);
+    min-height: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid transparent;
+}
+
+.grid-day-item:not(.empty):hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    background: rgba(255, 255, 255, 0.9);
+    border-color: var(--color-primary-light);
+}
+
+.grid-day-item.empty {
+    background: transparent;
+}
+
+.grid-day-item.today {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    border-color: transparent;
+}
+
+.grid-day-number {
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.grid-day-item.today .grid-day-number {
+    color: white;
+}
+
+.grid-day-lunar {
+    font-size: var(--font-size-xs);
+    color: #f093fb;
+    margin-top: var(--spacing-1);
+    font-style: italic;
+}
+
+.grid-day-item.today .grid-day-lunar {
+    color: rgba(255, 255, 255, 0.9);
+}
+
 @media (max-width: 768px) {
     .mini-calendar {
         padding: var(--spacing-4);
@@ -126,5 +349,14 @@
 
     .day-lunar {
         font-size: 0.65rem;
+    }
+
+    .grid-day-item {
+        padding: var(--spacing-2);
+        min-height: 50px;
+    }
+
+    .grid-day-number {
+        font-size: var(--font-size-base);
     }
 }

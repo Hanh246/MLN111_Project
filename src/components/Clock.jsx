@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { LOCALE, DATE_FORMAT_OPTIONS } from '../utils/constants';
 import './Clock.css';
 
 function Clock() {
@@ -13,21 +14,11 @@ function Clock() {
   }, []);
 
   const formatTime = (date) => {
-    return date.toLocaleTimeString('vi-VN', {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false
-    });
+    return date.toLocaleTimeString(LOCALE, DATE_FORMAT_OPTIONS.time);
   };
 
   const formatDate = (date) => {
-    return date.toLocaleDateString('vi-VN', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    return date.toLocaleDateString(LOCALE, DATE_FORMAT_OPTIONS.dateLong);
   };
 
   return (
