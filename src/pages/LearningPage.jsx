@@ -4,7 +4,6 @@ import MiniCalendar from '../components/MiniCalendar';
 import FavoriteQuotes from '../components/FavoriteQuotes';
 import DailyReflection from '../components/DailyReflection';
 import QuizSection from '../components/QuizSection';
-import DataManager from '../components/DataManager';
 import monthlyLessons from '../data/monthlyLessons';
 import monthlyQuizzes from '../data/monthlyQuizzes';
 import { useFavorites } from '../hooks/useFavorites';
@@ -129,11 +128,6 @@ function LearningPage() {
                         favorites={favorites}
                         onRemove={removeFavorite}
                     />
-                </div>
-
-                {/* Data Manager - Export/Import */}
-                <div data-aos="fade">
-                    <DataManager />
                 </div>
             </div>
         </div>

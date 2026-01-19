@@ -21,7 +21,6 @@ function App() {
       once: true,
       offset: 0,
       delay: 0,
-      disable: 'mobile',
     });
   }, []);
 
