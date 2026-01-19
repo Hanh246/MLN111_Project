@@ -3,17 +3,20 @@ import gameQuestions from '../data/gameQuestions';
 import './MillionaireGame.css';
 
 function MillionaireGame() {
+  const [showIntro, setShowIntro] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [gameStatus, setGameStatus] = useState('playing'); // 'playing', 'won', 'lost'
   const [lifelines, setLifelines] = useState({
     fiftyFifty: true,
     askAudience: true,
-    phoneMarx: true
+    phoneMarx: true,
+    phoneLenin: true,
+    phoneEngels: true
   });
   const [eliminatedAnswers, setEliminatedAnswers] = useState([]);
   const [audienceVotes, setAudienceVotes] = useState(null);
-  const [marxAnswer, setMarxAnswer] = useState(null);
+  const [helperAnswer, setHelperAnswer] = useState(null);
   const [isAnswerLocked, setIsAnswerLocked] = useState(false);
 
   const question = gameQuestions[currentQuestion];
@@ -21,7 +24,7 @@ function MillionaireGame() {
 
   // Helper functions
   const handleAnswerClick = (answerId) => {
-    if (isAnswerLocked || selectedAnswer) return;
+    if (isAnswerLocked) return;
     setSelectedAnswer(answerId);
   };
 
@@ -42,7 +45,7 @@ function MillionaireGame() {
           setIsAnswerLocked(false);
           setEliminatedAnswers([]);
           setAudienceVotes(null);
-          setMarxAnswer(null);
+          setHelperAnswer(null);
         }
       } else {
         setGameStatus('lost');
@@ -93,26 +96,112 @@ function MillionaireGame() {
     
     const correctAnswer = question.answers.find(a => a.correct);
     const hints = [
-      `Đồng chí ơi, tôi khá chắc đáp án là ${correctAnswer.id}. Tin tôi đi!`,
-      `Theo lý thuyết của tôi, câu trả lời phải là ${correctAnswer.id}.`,
-      `Tôi đã nghiên cứu vấn đề này, tôi nghĩ là ${correctAnswer.id}!`,
-      `${correctAnswer.id} chính là đáp án đúng, tôi 90% chắc chắn!`
+      { name: 'Karl Marx', text: `Đồng chí ơi, tôi khá chắc đáp án là ${correctAnswer.id}. Tin tôi đi!` },
+      { name: 'Karl Marx', text: `Theo lý thuyết của tôi, câu trả lời phải là ${correctAnswer.id}.` },
+      { name: 'Karl Marx', text: `Tôi đã nghiên cứu vấn đề này, tôi nghĩ là ${correctAnswer.id}!` },
+      { name: 'Karl Marx', text: `${correctAnswer.id} chính là đáp án đúng, tôi 90% chắc chắn!` }
     ];
     
-    setMarxAnswer(hints[Math.floor(Math.random() * hints.length)]);
+    setHelperAnswer(hints[Math.floor(Math.random() * hints.length)]);
     setLifelines({ ...lifelines, phoneMarx: false });
+  };
+
+  // Lifeline: Phone Lenin
+  const usePhoneLenin = () => {
+    if (!lifelines.phoneLenin) return;
+    
+    const correctAnswer = question.answers.find(a => a.correct);
+    const hints = [
+      { name: 'Vladimir Lenin', text: `Tôi tin rằng đáp án ${correctAnswer.id} là chính xác, đồng chí!` },
+      { name: 'Vladimir Lenin', text: `Theo kinh nghiệm cách mạng của tôi, hãy chọn ${correctAnswer.id}.` },
+      { name: 'Vladimir Lenin', text: `Đáp án ${correctAnswer.id} phù hợp với nguyên lý duy vật biện chứng!` },
+      { name: 'Vladimir Lenin', text: `Tôi khuyên bạn nên chọn ${correctAnswer.id}, đó là lựa chọn đúng đắn!` }
+    ];
+    
+    setHelperAnswer(hints[Math.floor(Math.random() * hints.length)]);
+    setLifelines({ ...lifelines, phoneLenin: false });
+  };
+
+  // Lifeline: Phone Engels
+  const usePhoneEngels = () => {
+    if (!lifelines.phoneEngels) return;
+    
+    const correctAnswer = question.answers.find(a => a.correct);
+    const hints = [
+      { name: 'Friedrich Engels', text: `Bạn thân ơi, tôi và Marx đều cho rằng đáp án ${correctAnswer.id} là chính xác!` },
+      { name: 'Friedrich Engels', text: `Dựa trên nghiên cứu chung của chúng tôi, ${correctAnswer.id} là đáp án đúng.` },
+      { name: 'Friedrich Engels', text: `Tôi khá chắc chắn đáp án là ${correctAnswer.id}, hãy tin tôi!` },
+      { name: 'Friedrich Engels', text: `${correctAnswer.id} - đây là kết luận từ lý thuyết của Marx và tôi!` }
+    ];
+    
+    setHelperAnswer(hints[Math.floor(Math.random() * hints.length)]);
+    setLifelines({ ...lifelines, phoneEngels: false });
+  };
+
+  const startGame = () => {
+    setShowIntro(false);
   };
 
   const resetGame = () => {
     setCurrentQuestion(0);
     setSelectedAnswer(null);
     setGameStatus('playing');
-    setLifelines({ fiftyFifty: true, askAudience: true, phoneMarx: true });
+    setLifelines({ 
+      fiftyFifty: true, 
+      askAudience: true, 
+      phoneMarx: true,
+      phoneLenin: true,
+      phoneEngels: true 
+    });
     setEliminatedAnswers([]);
     setAudienceVotes(null);
-    setMarxAnswer(null);
+    setHelperAnswer(null);
     setIsAnswerLocked(false);
+    setShowIntro(false);
   };
+
+  // Render intro screen
+  if (showIntro) {
+    return (
+      <div className="millionaire-game">
+        <div className="game-intro">
+          <h1 className="intro-title">
+            <span className="title-icon">💰</span>
+            Ai Là Triệu Phú
+            <span className="title-icon">💰</span>
+          </h1>
+          <h2 className="intro-subtitle">Triết Học Mác-Lênin</h2>
+          
+          <div className="game-rules">
+            <h3>📋 Luật Chơi</h3>
+            <ul>
+              <li>🎯 <strong>15 câu hỏi</strong> với độ khó tăng dần</li>
+              <li>💵 Mỗi câu trả lời đúng sẽ tăng tiền thưởng</li>
+              <li>❌ Trả lời sai → Kết thúc game</li>
+              <li>🎁 Trả lời đúng hết 15 câu → Chiến thắng <strong>500 triệu VNĐ</strong></li>
+            </ul>
+            
+            <h3>🆘 Quyền Trợ Giúp (5 quyền)</h3>
+            <ul>
+              <li><strong>50:50</strong> - Loại bỏ 2 đáp án sai</li>
+              <li><strong>👥 Hỏi Khán Giả</strong> - Xem phần trăm bình chọn</li>
+              <li><strong>📞 Gọi Marx</strong> - Nhận gợi ý từ Karl Marx</li>
+              <li><strong>📞 Gọi Lenin</strong> - Nhận gợi ý từ Vladimir Lenin</li>
+              <li><strong>📞 Gọi Engels</strong> - Nhận gợi ý từ Friedrich Engels</li>
+            </ul>
+            
+            <div className="rules-note">
+              💡 <em>Mỗi quyền trợ giúp chỉ dùng được 1 lần!</em>
+            </div>
+          </div>
+          
+          <button className="start-game-btn" onClick={startGame}>
+            🎮 Bắt Đầu Chơi
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   // Render win/lose screens
   if (gameStatus === 'won') {
@@ -234,13 +323,29 @@ function MillionaireGame() {
             >
               📞 Marx
             </button>
+            <button 
+              className={`lifeline-btn ${!lifelines.phoneLenin ? 'used' : ''}`}
+              onClick={usePhoneLenin}
+              disabled={!lifelines.phoneLenin || isAnswerLocked}
+              title="Gọi cho Lenin"
+            >
+              📞 Lenin
+            </button>
+            <button 
+              className={`lifeline-btn ${!lifelines.phoneEngels ? 'used' : ''}`}
+              onClick={usePhoneEngels}
+              disabled={!lifelines.phoneEngels || isAnswerLocked}
+              title="Gọi cho Engels"
+            >
+              📞 Engels
+            </button>
           </div>
 
-          {/* Marx Answer Display */}
-          {marxAnswer && (
-            <div className="marx-answer">
-              <div className="marx-avatar">📞 Karl Marx:</div>
-              <div className="marx-text">{marxAnswer}</div>
+          {/* Helper Answer Display */}
+          {helperAnswer && (
+            <div className="helper-answer">
+              <div className="helper-avatar">📞 {helperAnswer.name}:</div>
+              <div className="helper-text">{helperAnswer.text}</div>
             </div>
           )}
 
