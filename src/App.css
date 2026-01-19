@@ -24,6 +24,13 @@
   font-weight: 500;
   cursor: pointer;
   transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.btn-icon {
+  font-size: 1.2rem;
 }
 
 .view-btn:hover {
@@ -35,6 +42,29 @@
   color: white;
   border-color: transparent;
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.dark-mode-toggle {
+  padding: var(--spacing-3);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+}
+
+.dark-mode-toggle:hover {
+  background: rgba(102, 126, 234, 0.1);
+  transform: scale(1.1);
+}
+
+.dark-mode-toggle:active {
+  transform: scale(0.95);
 }
 
 .app {
@@ -140,5 +170,92 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Welcome Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-4);
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content {
+  position: relative;
+  background: var(--color-background);
+  border-radius: var(--radius-xl);
+  max-width: 1200px;
+  max-height: 90vh;
+  width: 100%;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.4s ease-out;
+  border: 2px solid var(--color-primary);
+}
+
+.modal-close {
+  position: sticky;
+  top: var(--spacing-4);
+  float: right;
+  margin-right: var(--spacing-4);
+  margin-top: var(--spacing-4);
+  background: rgba(220, 38, 38, 0.1);
+  border: 2px solid #dc2626;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #dc2626;
+  font-size: 2rem;
+  font-weight: bold;
+  z-index: 10;
+  transition: all var(--transition-base);
+}
+
+.modal-close:hover {
+  background: #dc2626;
+  color: white;
+  transform: scale(1.1) rotate(90deg);
+}
+
+.modal-close:active {
+  transform: scale(0.95);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    max-height: 95vh;
+    border-radius: var(--radius-lg);
+  }
+
+  .modal-close {
+    width: 36px;
+    height: 36px;
+    top: var(--spacing-2);
+    right: var(--spacing-2);
   }
 }

@@ -212,6 +212,115 @@ body {
   background: var(--color-primary-dark);
 }
 
+/* Shared Quote Tooltip Styles */
+.quote-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-backdrop);
+  -webkit-backdrop-filter: var(--glass-backdrop);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-3);
+  padding-top: var(--spacing-6); /* Extra padding to create hover area */
+  min-width: 200px;
+  max-width: 300px;
+  box-shadow: var(--shadow-lg);
+  z-index: 1000;
+  animation: fadeIn var(--transition-fast) ease-out;
+  pointer-events: auto;
+  margin-bottom: -4px; /* Overlap with parent to prevent gap */
+}
+
+.quote-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--glass-bg);
+}
+
+.favorite-btn {
+  position: absolute;
+  top: var(--spacing-2);
+  right: var(--spacing-2);
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: var(--spacing-1);
+  line-height: 1;
+  transition: transform var(--transition-fast);
+}
+
+.favorite-btn:hover {
+  transform: scale(1.2);
+}
+
+.favorite-btn:active {
+  transform: scale(0.9);
+}
+
+.quote-text {
+  font-size: var(--font-size-sm);
+  font-style: italic;
+  color: #ffffff;
+  margin-bottom: var(--spacing-2);
+  line-height: 1.5;
+  padding-right: var(--spacing-6);
+}
+
+.quote-author {
+  font-size: var(--font-size-xs);
+  color: rgba(255, 255, 255, 0.9);
+  text-align: right;
+  font-weight: 500;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 768px) {
+  :root {
+    --font-size-3xl: 1.5rem;
+    --font-size-4xl: 1.875rem;
+  }
+}.quote-author {
+  font-size: var(--font-size-xs);
+  color: rgba(255, 255, 255, 0.9);
+  text-align: right;
+  font-weight: 500;
+}
+
+/* Dark Mode Variables */
+body.dark-mode {
+  --color-background: #1a1a2e;
+  --color-surface: rgba(22, 27, 34, 0.85);
+  --color-surface-light: rgba(30, 35, 45, 0.95);
+  
+  --color-text-primary: #e4e4e7;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #71717a;
+  
+  --glass-bg: rgba(22, 27, 34, 0.75);
+  --glass-border: rgba(148, 163, 184, 0.15);
+  
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+}
+
+body.dark-mode .quote-text {
+  color: #ffffff;
+}
+
+body.dark-mode .quote-author {
+  color: rgba(255, 255, 255, 0.9);
+}
+
 /* Responsive breakpoints */
 @media (max-width: 768px) {
   :root {

@@ -1,5 +1,12 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
+import GameAnswer from '../components/GameAnswer';
 import gameQuestions from '../data/gameQuestions';
+import {
+  GAME_CONSTANTS,
+  getHintFromHelper,
+  simulateAudienceVotes,
+  getFiftyFiftyAnswers,
+} from '../utils/gameHelpers';
 import './MillionaireGame.css';
 
 function MillionaireGame() {
@@ -20,15 +27,20 @@ function MillionaireGame() {
   const [isAnswerLocked, setIsAnswerLocked] = useState(false);
 
   const question = gameQuestions[currentQuestion];
-  const moneyTree = gameQuestions.map(q => q.prize).reverse();
+  
+  // Memoize money tree to avoid recreating on every render
+  const moneyTree = useMemo(
+    () => gameQuestions.map(q => q.prize).reverse(),
+    []
+  );
 
-  // Helper functions
-  const handleAnswerClick = (answerId) => {
+  // Event handlers with useCallback
+  const handleAnswerClick = useCallback((answerId) => {
     if (isAnswerLocked) return;
     setSelectedAnswer(answerId);
-  };
+  }, [isAnswerLocked]);
 
-  const handleFinalAnswer = () => {
+  const handleFinalAnswer = useCallback(() => {
     if (!selectedAnswer) return;
     setIsAnswerLocked(true);
 
@@ -50,99 +62,48 @@ function MillionaireGame() {
       } else {
         setGameStatus('lost');
       }
-    }, 2000);
-  };
+    }, GAME_CONSTANTS.ANSWER_FEEDBACK_DELAY);
+  }, [selectedAnswer, question, currentQuestion]);
 
   // Lifeline: 50:50
-  const useFiftyFifty = () => {
+  const useFiftyFifty = useCallback(() => {
     if (!lifelines.fiftyFifty) return;
     
-    const correctAnswer = question.answers.find(a => a.correct);
-    const wrongAnswers = question.answers.filter(a => !a.correct);
-    const toEliminate = wrongAnswers.slice(0, 2).map(a => a.id);
-    
+    const toEliminate = getFiftyFiftyAnswers(question.answers);
     setEliminatedAnswers(toEliminate);
     setLifelines({ ...lifelines, fiftyFifty: false });
-  };
+  }, [lifelines, question]);
 
   // Lifeline: Ask Audience
-  const useAskAudience = () => {
+  const useAskAudience = useCallback(() => {
     if (!lifelines.askAudience) return;
     
-    const correctAnswer = question.answers.find(a => a.correct);
-    // Simulate audience votes (correct answer gets most votes)
-    const votes = {};
-    question.answers.forEach(answer => {
-      if (answer.correct) {
-        votes[answer.id] = 60 + Math.random() * 30; // 60-90%
-      } else {
-        votes[answer.id] = Math.random() * 15; // 0-15%
-      }
-    });
-    
-    // Normalize to 100%
-    const total = Object.values(votes).reduce((a, b) => a + b, 0);
-    Object.keys(votes).forEach(key => {
-      votes[key] = Math.round((votes[key] / total) * 100);
-    });
-    
+    const votes = simulateAudienceVotes(question.answers);
     setAudienceVotes(votes);
     setLifelines({ ...lifelines, askAudience: false });
-  };
+  }, [lifelines, question]);
 
-  // Lifeline: Phone Marx
-  const usePhoneMarx = () => {
-    if (!lifelines.phoneMarx) return;
+  // Unified phone helper function
+  const usePhoneHelper = useCallback((helperKey, lifelineKey) => {
+    if (!lifelines[lifelineKey]) return;
     
     const correctAnswer = question.answers.find(a => a.correct);
-    const hints = [
-      { name: 'Karl Marx', text: `Đồng chí ơi, tôi khá chắc đáp án là ${correctAnswer.id}. Tin tôi đi!` },
-      { name: 'Karl Marx', text: `Theo lý thuyết của tôi, câu trả lời phải là ${correctAnswer.id}.` },
-      { name: 'Karl Marx', text: `Tôi đã nghiên cứu vấn đề này, tôi nghĩ là ${correctAnswer.id}!` },
-      { name: 'Karl Marx', text: `${correctAnswer.id} chính là đáp án đúng, tôi 90% chắc chắn!` }
-    ];
+    const hint = getHintFromHelper(helperKey, correctAnswer.id);
     
-    setHelperAnswer(hints[Math.floor(Math.random() * hints.length)]);
-    setLifelines({ ...lifelines, phoneMarx: false });
-  };
+    setHelperAnswer(hint);
+    setLifelines({ ...lifelines, [lifelineKey]: false });
+  }, [lifelines, question]);
 
-  // Lifeline: Phone Lenin
-  const usePhoneLenin = () => {
-    if (!lifelines.phoneLenin) return;
-    
-    const correctAnswer = question.answers.find(a => a.correct);
-    const hints = [
-      { name: 'Vladimir Lenin', text: `Tôi tin rằng đáp án ${correctAnswer.id} là chính xác, đồng chí!` },
-      { name: 'Vladimir Lenin', text: `Theo kinh nghiệm cách mạng của tôi, hãy chọn ${correctAnswer.id}.` },
-      { name: 'Vladimir Lenin', text: `Đáp án ${correctAnswer.id} phù hợp với nguyên lý duy vật biện chứng!` },
-      { name: 'Vladimir Lenin', text: `Tôi khuyên bạn nên chọn ${correctAnswer.id}, đó là lựa chọn đúng đắn!` }
-    ];
-    
-    setHelperAnswer(hints[Math.floor(Math.random() * hints.length)]);
-    setLifelines({ ...lifelines, phoneLenin: false });
-  };
+  // Individual helper functions
+  const usePhoneMarx = useCallback(() => usePhoneHelper('marx', 'phoneMarx'), [usePhoneHelper]);
+  const usePhoneLenin = useCallback(() => usePhoneHelper('lenin', 'phoneLenin'), [usePhoneHelper]);
+  const usePhoneEngels = useCallback(() => usePhoneHelper('engels', 'phoneEngels'), [usePhoneHelper]);
 
-  // Lifeline: Phone Engels
-  const usePhoneEngels = () => {
-    if (!lifelines.phoneEngels) return;
-    
-    const correctAnswer = question.answers.find(a => a.correct);
-    const hints = [
-      { name: 'Friedrich Engels', text: `Bạn thân ơi, tôi và Marx đều cho rằng đáp án ${correctAnswer.id} là chính xác!` },
-      { name: 'Friedrich Engels', text: `Dựa trên nghiên cứu chung của chúng tôi, ${correctAnswer.id} là đáp án đúng.` },
-      { name: 'Friedrich Engels', text: `Tôi khá chắc chắn đáp án là ${correctAnswer.id}, hãy tin tôi!` },
-      { name: 'Friedrich Engels', text: `${correctAnswer.id} - đây là kết luận từ lý thuyết của Marx và tôi!` }
-    ];
-    
-    setHelperAnswer(hints[Math.floor(Math.random() * hints.length)]);
-    setLifelines({ ...lifelines, phoneEngels: false });
-  };
-
-  const startGame = () => {
+  const startGame = useCallback(() => {
     setShowIntro(false);
-  };
+  }, []);
 
-  const resetGame = () => {
+  const resetGame = useCallback(() => {
     setCurrentQuestion(0);
     setSelectedAnswer(null);
     setGameStatus('playing');
@@ -158,7 +119,7 @@ function MillionaireGame() {
     setHelperAnswer(null);
     setIsAnswerLocked(false);
     setShowIntro(false);
-  };
+  }, []);
 
   // Render intro screen
   if (showIntro) {
@@ -281,18 +242,17 @@ function MillionaireGame() {
               const showWrong = isAnswerLocked && isSelected && !answer.correct;
 
               return (
-                <button
+                <GameAnswer
                   key={answer.id}
-                  className={`answer-btn ${isEliminated ? 'eliminated' : ''} ${isSelected ? 'selected' : ''} ${showCorrect ? 'correct' : ''} ${showWrong ? 'wrong' : ''}`}
-                  onClick={() => handleAnswerClick(answer.id)}
+                  answer={answer}
+                  isEliminated={isEliminated}
+                  isSelected={isSelected}
+                  showCorrect={showCorrect}
+                  showWrong={showWrong}
+                  audienceVote={audienceVotes?.[answer.id]}
+                  onClick={handleAnswerClick}
                   disabled={isEliminated || isAnswerLocked}
-                >
-                  <span className="answer-letter">{answer.id}</span>
-                  <span className="answer-text">{answer.text}</span>
-                  {audienceVotes && (
-                    <span className="audience-vote">{audienceVotes[answer.id]}%</span>
-                  )}
-                </button>
+                />
               );
             })}
           </div>

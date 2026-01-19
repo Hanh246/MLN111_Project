@@ -146,6 +146,23 @@
     opacity: 0.6;
 }
 
+/* Favorited indicator */
+.day-item.favorited,
+.grid-day-item.favorited {
+    background: rgba(255, 215, 0, 0.15) !important;
+}
+
+.day-item.favorited::before,
+.grid-day-item.favorited::before {
+    content: '⭐';
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 0.7rem;
+    opacity: 0.8;
+    z-index: 1;
+}
+
 /* Quote Tooltip */
 .quote-tooltip {
     position: absolute;

@@ -1,21 +1,40 @@
-import { useState } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import Clock from '../components/Clock';
 import MiniCalendar from '../components/MiniCalendar';
+import FavoriteQuotes from '../components/FavoriteQuotes';
+import DailyReflection from '../components/DailyReflection';
+import QuizSection from '../components/QuizSection';
+import DataManager from '../components/DataManager';
 import monthlyLessons from '../data/monthlyLessons';
+import monthlyQuizzes from '../data/monthlyQuizzes';
+import { useFavorites } from '../hooks/useFavorites';
 import './LearningPage.css';
 
 function LearningPage() {
     const [currentDate, setCurrentDate] = useState(new Date());
     const selectedMonth = currentDate.getMonth() + 1; // 1-12, derived from currentDate
+    
+    // Favorites hook
+    const { favorites, isFavorite, toggleFavorite, removeFavorite } = useFavorites();
 
-    const lesson = monthlyLessons.find(l => l.month === selectedMonth) || monthlyLessons[0];
+    // Memoize lesson lookup
+    const lesson = useMemo(
+        () => monthlyLessons.find(l => l.month === selectedMonth) || monthlyLessons[0],
+        [selectedMonth]
+    );
+
+    // Memoize quiz lookup
+    const quiz = useMemo(
+        () => monthlyQuizzes.find(q => q.month === selectedMonth),
+        [selectedMonth]
+    );
 
     // Handle month button clicks
-    const handleMonthSelect = (month) => {
+    const handleMonthSelect = useCallback((month) => {
         const newDate = new Date(currentDate);
         newDate.setMonth(month - 1);
         setCurrentDate(newDate);
-    };
+    }, [currentDate]);
 
     return (
         <div className="learning-page">
@@ -26,7 +45,7 @@ function LearningPage() {
                 {/* Header with Title and Clock */}
                 <header className="learning-header">
                     <h1 className="learning-title">365 Ngày Với Mác-Lênin</h1>
-                    <p className="learning-subtitle">Một Năm Hành Trình Triết Học Cách Mạng</p>
+                    <p className="learning-subtitle">Nhóm 11</p>
                     <Clock />
                 </header>
 
@@ -44,12 +63,19 @@ function LearningPage() {
                 </div>
 
                 {/* Mini Calendar with Lunar Dates */}
-                <MiniCalendar currentDate={currentDate} setCurrentDate={setCurrentDate} />
+                <div data-aos="fade">
+                    <MiniCalendar 
+                        currentDate={currentDate} 
+                        setCurrentDate={setCurrentDate}
+                        isFavorite={isFavorite}
+                        onToggleFavorite={toggleFavorite}
+                    />
+                </div>
 
                 {/* Lesson Content */}
                 <div className="lesson-container">
                     {/* Theme Title */}
-                    <div className="theme-card">
+                    <div className="theme-card" data-aos="fade">
                         <h2 className="theme-title">{lesson.theme}</h2>
                         <p className="theme-intro">{lesson.introduction}</p>
                     </div>
@@ -57,7 +83,7 @@ function LearningPage() {
                     {/* Concept Cards */}
                     <div className="concepts-grid">
                         {lesson.concepts.map((concept, index) => (
-                            <div key={index} className="concept-card">
+                            <div key={index} className="concept-card" data-aos="fade">
                                 <h3 className="concept-title">
                                     <span className="concept-number">{index + 1}</span>
                                     {concept.title}
@@ -81,10 +107,33 @@ function LearningPage() {
                     </div>
 
                     {/* Summary Card */}
-                    <div className="summary-card">
+                    <div className="summary-card" data-aos="fade">
                         <h3>Tóm tắt</h3>
                         <p>{lesson.summary}</p>
                     </div>
+                </div>
+
+                {/* Quiz Section - After Summary */}
+                <div data-aos="fade">
+                    <QuizSection quiz={quiz} month={selectedMonth} />
+                </div>
+
+                {/* Daily Reflection */}
+                <div data-aos="fade">
+                    <DailyReflection currentDate={currentDate} />
+                </div>
+
+                {/* Favorite Quotes Section */}
+                <div data-aos="fade">
+                    <FavoriteQuotes 
+                        favorites={favorites}
+                        onRemove={removeFavorite}
+                    />
+                </div>
+
+                {/* Data Manager - Export/Import */}
+                <div data-aos="fade">
+                    <DataManager />
                 </div>
             </div>
         </div>

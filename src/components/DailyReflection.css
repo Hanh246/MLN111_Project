@@ -1,0 +1,98 @@
+.reflection-container {
+  margin-top: var(--spacing-8);
+  padding: var(--spacing-6);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-backdrop);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--glass-border);
+}
+
+.reflection-title {
+  font-size: var(--font-size-2xl);
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-4);
+  font-family: var(--font-sans);
+  text-align: center;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+}
+
+.section-icon {
+  font-size: 1.5rem;
+}
+
+.reflection-prompt {
+  font-family: var(--font-serif);
+  font-size: var(--font-size-lg);
+  font-style: italic;
+  color: var(--color-text-primary);
+  text-align: center;
+  margin-bottom: var(--spacing-4);
+  line-height: 1.6;
+  padding: var(--spacing-4);
+  background: rgba(44, 95, 141, 0.05);
+  border-radius: var(--radius-md);
+}
+
+.reflection-textarea {
+  width: 100%;
+  padding: var(--spacing-4);
+  border: 2px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-sans);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.6);
+  resize: vertical;
+  min-height: 120px;
+  transition: all var(--transition-base);
+}
+
+.reflection-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 0 3px rgba(44, 95, 141, 0.1);
+}
+
+.reflection-textarea::placeholder {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.reflection-footer {
+  margin-top: var(--spacing-2);
+  text-align: right;
+  min-height: 20px;
+}
+
+.saved-indicator {
+  color: #16a34a;
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  animation: fadeIn var(--transition-base) ease-out;
+}
+
+.char-count {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+@media (max-width: 768px) {
+  .reflection-container {
+    padding: var(--spacing-4);
+  }
+
+  .reflection-prompt {
+    font-size: var(--font-size-base);
+    padding: var(--spacing-3);
+  }
+
+  .reflection-textarea {
+    font-size: var(--font-size-sm);
+  }
+}
