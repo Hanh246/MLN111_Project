@@ -1,0 +1,133 @@
+.flashcard-deck {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-8);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(102, 126, 234, 0.2);
+    margin-bottom: var(--spacing-8);
+}
+
+.deck-header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    margin-bottom: var(--spacing-6);
+}
+
+.deck-icon {
+    font-size: 2rem;
+    color: #667eea;
+}
+
+.deck-title {
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: #667eea;
+}
+
+.deck-card-container {
+    margin-bottom: var(--spacing-6);
+}
+
+.deck-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-4);
+}
+
+.nav-btn {
+    padding: var(--spacing-3);
+    background: rgba(102, 126, 234, 0.1);
+    border: 2px solid #667eea;
+    border-radius: var(--radius-md);
+    color: #667eea;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+}
+
+.nav-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: scale(1.1);
+}
+
+.nav-btn:active {
+    transform: scale(0.95);
+}
+
+.card-counter {
+    font-size: var(--font-size-xl);
+    font-weight: 600;
+    color: #667eea;
+    min-width: 80px;
+    text-align: center;
+}
+
+.shuffle-btn {
+    padding: var(--spacing-3) var(--spacing-5);
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border: none;
+    border-radius: var(--radius-md);
+    color: white;
+    font-size: var(--font-size-base);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+}
+
+.shuffle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.shuffle-btn:active {
+    transform: translateY(0);
+}
+
+.deck-hint {
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-style: italic;
+    font-size: var(--font-size-sm);
+}
+
+.no-cards {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-4);
+    padding: var(--spacing-12);
+    color: var(--color-text-secondary);
+}
+
+@media (max-width: 768px) {
+    .flashcard-deck {
+        padding: var(--spacing-6);
+    }
+
+    .deck-title {
+        font-size: var(--font-size-xl);
+    }
+
+    .nav-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .card-counter {
+        font-size: var(--font-size-lg);
+        min-width: 60px;
+    }
+}

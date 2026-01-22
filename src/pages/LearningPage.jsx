@@ -4,6 +4,8 @@ import MiniCalendar from '../components/MiniCalendar';
 import FavoriteQuotes from '../components/FavoriteQuotes';
 import DailyReflection from '../components/DailyReflection';
 import QuizSection from '../components/QuizSection';
+import FlashcardDeck from '../components/FlashcardDeck';
+import ChatBot from '../components/ChatBot';
 import monthlyLessons from '../data/monthlyLessons';
 import monthlyQuizzes from '../data/monthlyQuizzes';
 import { useFavorites } from '../hooks/useFavorites';
@@ -39,6 +41,18 @@ function LearningPage() {
         <div className="learning-page">
             {/* MSN-style Gradient Background */}
             <div className="learning-background"></div>
+
+            {/* Shooting Stars */}
+            <div className="shooting-stars">
+                <div className="shooting-star"></div>
+                <div className="shooting-star"></div>
+                <div className="shooting-star"></div>
+                <div className="shooting-star"></div>
+                <div className="shooting-star"></div>
+                <div className="shooting-star"></div>
+                <div className="shooting-star"></div>
+                <div className="shooting-star"></div>
+            </div>
 
             <div className="learning-content">
                 {/* Header with Title and Clock */}
@@ -129,7 +143,15 @@ function LearningPage() {
                         onRemove={removeFavorite}
                     />
                 </div>
+
+                {/* Flashcards Section */}
+                <div data-aos="fade">
+                    <FlashcardDeck month={selectedMonth} />
+                </div>
             </div>
+
+            {/* AI ChatBot - Floating */}
+            <ChatBot />
         </div>
     );
 }

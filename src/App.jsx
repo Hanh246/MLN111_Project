@@ -1,5 +1,5 @@
 import { Suspense, lazy, useState, useEffect } from 'react'
-import { IoBookSharp, IoGameController, IoInformationCircle, IoClose } from 'react-icons/io5'
+import { IoBookSharp, IoGameController, IoInformationCircle, IoClose, IoSparkles } from 'react-icons/io5'
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import './App.css'
@@ -7,6 +7,7 @@ import './App.css'
 // Lazy load pages for better performance
 const LearningPage = lazy(() => import('./pages/LearningPage'));
 const MillionaireGame = lazy(() => import('./pages/MillionaireGame'));
+const TarotPage = lazy(() => import('./pages/TarotPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 
 function App() {
@@ -79,6 +80,13 @@ function App() {
           Trò chơi
         </button>
         <button
+          className={`view-btn ${currentView === 'tarot' ? 'active' : ''}`}
+          onClick={() => setCurrentView('tarot')}
+        >
+          <IoSparkles className="btn-icon" />
+          Tarot
+        </button>
+        <button
           className="view-btn"
           onClick={openAboutModal}
         >
@@ -95,6 +103,7 @@ function App() {
       }>
         {currentView === 'learning' && <LearningPage />}
         {currentView === 'game' && <MillionaireGame />}
+        {currentView === 'tarot' && <TarotPage />}
       </Suspense>
     </>
   )
