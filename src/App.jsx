@@ -3,6 +3,7 @@ import { IoBookSharp, IoGameController, IoInformationCircle, IoClose, IoSparkles
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 import './App.css'
+import CollapsibleMenu from './components/CollapsibleMenu'
 
 // Lazy load pages for better performance
 const LearningPage = lazy(() => import('./pages/LearningPage'));
@@ -44,6 +45,13 @@ function App() {
 
   return (
     <>
+      {/* Collapsible Menu */}
+      <CollapsibleMenu 
+        currentView={currentView}
+        onViewChange={setCurrentView}
+        onOpenAbout={openAboutModal}
+      />
+
       {/* Welcome Modal */}
       {showWelcomeModal && (
         <div className="modal-overlay" onClick={closeWelcomeModal}>
@@ -63,37 +71,7 @@ function App() {
         </div>
       )}
 
-      {/* View Switcher */}
-      <div className="view-switcher">
-        <button
-          className={`view-btn ${currentView === 'learning' ? 'active' : ''}`}
-          onClick={() => setCurrentView('learning')}
-        >
-          <IoBookSharp className="btn-icon" />
-          Học tập
-        </button>
-        <button
-          className={`view-btn ${currentView === 'game' ? 'active' : ''}`}
-          onClick={() => setCurrentView('game')}
-        >
-          <IoGameController className="btn-icon" />
-          Trò chơi
-        </button>
-        <button
-          className={`view-btn ${currentView === 'tarot' ? 'active' : ''}`}
-          onClick={() => setCurrentView('tarot')}
-        >
-          <IoSparkles className="btn-icon" />
-          Tarot
-        </button>
-        <button
-          className="view-btn"
-          onClick={openAboutModal}
-        >
-          <IoInformationCircle className="btn-icon" />
-          Giới thiệu
-        </button>
-      </div>
+
 
       <Suspense fallback={
         <div className="loading-fallback">

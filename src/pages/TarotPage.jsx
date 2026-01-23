@@ -30,8 +30,16 @@ const TarotPage = () => {
   };
 
   const getRandomCards = () => {
-    const shuffled = [...tarotCards].sort(() => Math.random() - 0.5);
-    return [shuffled[0], shuffled[1], shuffled[2]];
+    const deck = [...tarotCards];
+    
+    // Fisher-Yates shuffle for unbiased randomization
+    for (let i = deck.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+    
+    // Return first 3 cards (guaranteed unique)
+    return [deck[0], deck[1], deck[2]];
   };
 
   const handleDrawCards = () => {

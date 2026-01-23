@@ -84,11 +84,29 @@ export function simulateAudienceVotes(answers) {
     }
   });
 
-  // Normalize to 100%
+  // Normalize to 100% using largest remainder method
   const total = Object.values(votes).reduce((a, b) => a + b, 0);
-  Object.keys(votes).forEach((key) => {
-    votes[key] = Math.round((votes[key] / total) * 100);
-  });
+  const keys = Object.keys(votes);
+  
+  // Calculate percentages with remainder tracking
+  const percentages = keys.map(key => ({
+    key,
+    value: (votes[key] / total) * 100,
+    floored: Math.floor((votes[key] / total) * 100)
+  }));
+  
+  // Calculate how many percent points we need to distribute
+  const distributed = percentages.reduce((sum, p) => sum + p.floored, 0);
+  const remainder = 100 - distributed;
+  
+  // Sort by fractional part (descending) and give +1 to top N
+  percentages
+    .sort((a, b) => (b.value - b.floored) - (a.value - a.floored))
+    .slice(0, remainder)
+    .forEach(p => p.floored++);
+  
+  // Apply results
+  percentages.forEach(p => votes[p.key] = p.floored);
 
   return votes;
 }
@@ -100,7 +118,15 @@ export function simulateAudienceVotes(answers) {
  */
 export function getFiftyFiftyAnswers(answers) {
   const wrongAnswers = answers.filter((a) => !a.correct);
-  return wrongAnswers
+  
+  // Fisher-Yates shuffle to randomize which 2 wrong answers to remove
+  const shuffled = [...wrongAnswers];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  
+  return shuffled
     .slice(0, GAME_CONSTANTS.FIFTY_FIFTY_REMOVE_COUNT)
     .map((a) => a.id);
 }
