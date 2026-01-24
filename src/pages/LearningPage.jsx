@@ -6,6 +6,8 @@ import DailyReflection from '../components/DailyReflection';
 import QuizSection from '../components/QuizSection';
 import FlashcardDeck from '../components/FlashcardDeck';
 import ChatBot from '../components/ChatBot';
+import MindMap from '../components/MindMap';
+import VideoWidget from '../components/VideoWidget';
 import monthlyLessons from '../data/monthlyLessons';
 import monthlyQuizzes from '../data/monthlyQuizzes';
 import { useFavorites } from '../hooks/useFavorites';
@@ -126,6 +128,11 @@ function LearningPage() {
                     </div>
                 </div>
 
+                {/* Mind Map Section */}
+                <div data-aos="fade">
+                    <MindMap month={selectedMonth} />
+                </div>
+
                 {/* Quiz Section - After Summary */}
                 <div data-aos="fade">
                     <QuizSection quiz={quiz} month={selectedMonth} />
@@ -152,6 +159,9 @@ function LearningPage() {
 
             {/* AI ChatBot - Floating */}
             <ChatBot />
+
+            {/* Video Widget - Floating */}
+            <VideoWidget month={selectedMonth} />
         </div>
     );
 }
