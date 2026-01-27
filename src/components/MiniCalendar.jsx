@@ -1,227 +1,267 @@
-import { useState, useMemo, useCallback } from 'react';
-import { IoChevronBack, IoChevronForward, IoChevronDown, IoChevronUp } from 'react-icons/io5';
-import { Solar } from 'lunar-javascript';
-import { DAY_NAMES } from '../utils/constants';
-import quotes from '../data/quotes';
-import QuoteTooltip from './QuoteTooltip';
-import './MiniCalendar.css';
+import { useState, useMemo, useCallback, useRef, useEffect } from "react";
+import { IoChevronDown, IoChevronUp } from "react-icons/io5";
+import { Solar } from "lunar-javascript";
+import { DAY_NAMES, MONTH_NAMES } from "../utils/constants";
+import quotes from "../data/quotes";
+import QuoteTooltip from "./QuoteTooltip";
+import "./MiniCalendar.css";
 
-function MiniCalendar({ currentDate, setCurrentDate, isFavorite, onToggleFavorite }) {
-    const [isExpanded, setIsExpanded] = useState(false);
-    const [hoveredDay, setHoveredDay] = useState(null);
+function MiniCalendar({
+  currentDate,
+  setCurrentDate,
+  isFavorite,
+  onToggleFavorite,
+}) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [hoveredDay, setHoveredDay] = useState(null);
+  const [displayMonth, setDisplayMonth] = useState(currentDate.getMonth());
+  const [displayYear, setDisplayYear] = useState(currentDate.getFullYear());
+  const todayRef = useRef(null);
+  const scrollContainerRef = useRef(null);
 
-    // Navigation functions with useCallback
-    const goToPreviousWeek = useCallback(() => {
-        const newDate = new Date(currentDate);
-        newDate.setDate(currentDate.getDate() - 7);
-        setCurrentDate(newDate);
-    }, [currentDate, setCurrentDate]);
+  // Convert to lunar date using lunar-javascript
+  const getLunarDate = useCallback((date) => {
+    try {
+      const solar = Solar.fromYmd(
+        date.getFullYear(),
+        date.getMonth() + 1,
+        date.getDate(),
+      );
+      const lunar = solar.getLunar();
+      return `${lunar.getDay()}/${lunar.getMonth()}`;
+    } catch (error) {
+      console.error("Lunar conversion error:", error);
+      return "--/--";
+    }
+  }, []);
 
-    const goToNextWeek = useCallback(() => {
-        const newDate = new Date(currentDate);
-        newDate.setDate(currentDate.getDate() + 7);
-        setCurrentDate(newDate);
-    }, [currentDate, setCurrentDate]);
+  // Memoize current lunar date
+  const currentLunar = useMemo(
+    () => getLunarDate(currentDate),
+    [currentDate, getLunarDate],
+  );
 
-    const goToPreviousMonth = useCallback(() => {
-        const newDate = new Date(currentDate);
-        newDate.setMonth(currentDate.getMonth() - 1);
-        setCurrentDate(newDate);
-    }, [currentDate, setCurrentDate]);
+  // Create extended day list (60 days before and after today)
+  const extendedDays = useMemo(() => {
+    const days = [];
+    const today = new Date();
 
-    const goToNextMonth = useCallback(() => {
-        const newDate = new Date(currentDate);
-        newDate.setMonth(currentDate.getMonth() + 1);
-        setCurrentDate(newDate);
-    }, [currentDate, setCurrentDate]);
+    for (let i = -60; i <= 60; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+      days.push(date);
+    }
 
-    // Convert to lunar date using lunar-javascript
-    // Memoize to avoid repeated conversions for same date
-    const getLunarDate = useCallback((date) => {
-        try {
-            const solar = Solar.fromYmd(date.getFullYear(), date.getMonth() + 1, date.getDate());
-            const lunar = solar.getLunar();
-            return `${lunar.getDay()}/${lunar.getMonth()}`;
-        } catch (error) {
-            console.error('Lunar conversion error:', error);
-            return '--/--';
-        }
-    }, []);
+    return days;
+  }, []);
 
-    // Memoize current lunar date
-    const currentLunar = useMemo(() => getLunarDate(currentDate), [currentDate, getLunarDate]);
+  // Auto-scroll to today on mount
+  useEffect(() => {
+    if (todayRef.current && scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const todayElement = todayRef.current;
 
-    // Memoize week days calculation
-    const weekDays = useMemo(() => {
-        const week = [];
-        const today = currentDate.getDay(); // 0-6 (Sunday-Saturday)
+      // Calculate center position
+      const containerWidth = container.offsetWidth;
+      const elementWidth = todayElement.offsetWidth;
+      const elementLeft = todayElement.offsetLeft;
 
-        for (let i = 0; i < 7; i++) {
-            const date = new Date(currentDate);
-            date.setDate(currentDate.getDate() - today + i);
-            week.push(date);
-        }
+      // Scroll to center the today element
+      container.scrollLeft =
+        elementLeft - containerWidth / 2 + elementWidth / 2;
+    }
+  }, []);
 
-        return week;
-    }, [currentDate]);
+  // Handle scroll to detect center day and update month
+  const handleScroll = useCallback(() => {
+    if (!scrollContainerRef.current) return;
 
-    // Get all days in the current month
-    const monthDays = useMemo(() => {
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth();
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-        const daysInMonth = lastDay.getDate();
-        const startingDayOfWeek = firstDay.getDay();
+    const container = scrollContainerRef.current;
+    const containerWidth = container.offsetWidth;
+    const scrollLeft = container.scrollLeft;
+    const centerPosition = scrollLeft + containerWidth / 2;
 
-        const days = [];
+    // Find which day is at the center
+    const dayElements = container.querySelectorAll(".day-item");
+    let centerDay = null;
 
-        // Add empty cells for days before the first day of month
-        for (let i = 0; i < startingDayOfWeek; i++) {
-            days.push(null);
-        }
+    dayElements.forEach((element, index) => {
+      const elementLeft = element.offsetLeft;
+      const elementWidth = element.offsetWidth;
+      const elementCenter = elementLeft + elementWidth / 2;
 
-        // Add all days of the month
-        for (let day = 1; day <= daysInMonth; day++) {
-            const date = new Date(year, month, day);
-            days.push(date);
-        }
+      if (Math.abs(elementCenter - centerPosition) < elementWidth / 2) {
+        centerDay = extendedDays[index];
+      }
+    });
 
-        return days;
-    }, [currentDate]);
+    if (centerDay) {
+      const month = centerDay.getMonth();
+      const year = centerDay.getFullYear();
 
-    const todayDate = currentDate.getDate();
+      if (month !== displayMonth || year !== displayYear) {
+        setDisplayMonth(month);
+        setDisplayYear(year);
+      }
+    }
+  }, [extendedDays, displayMonth, displayYear]);
 
-    // Get quote for a specific date - memoized
-    const getQuoteForDate = useCallback((date) => {
-        if (!date) return null;
-        const month = date.getMonth() + 1; // 1-12
-        const day = date.getDate();
-        return quotes.find(q => q.month === month && q.day === day);
-    }, []);
+  // Get all days in the current month for expanded view
+  const monthDays = useMemo(() => {
+    const year = displayYear;
+    const month = displayMonth;
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const startingDayOfWeek = firstDay.getDay();
 
+    const days = [];
+
+    // Add empty cells for days before the first day of month
+    for (let i = 0; i < startingDayOfWeek; i++) {
+      days.push(null);
+    }
+
+    // Add all days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day);
+      days.push(date);
+    }
+
+    return days;
+  }, [displayMonth, displayYear]);
+
+  // Get quote for a specific date - memoized
+  const getQuoteForDate = useCallback((date) => {
+    if (!date) return null;
+    const month = date.getMonth() + 1; // 1-12
+    const day = date.getDate();
+    return quotes.find((q) => q.month === month && q.day === day);
+  }, []);
+
+
+  const today = new Date();
+  const isToday = (date) => {
     return (
-        <div className="mini-calendar">
-            <div className="mini-calendar-header">
-                <div className="current-date">
-                    <div className="solar-date">{currentDate.getDate()}</div>
-                    <div className="month-year">
-                        Tháng {currentDate.getMonth() + 1}, {currentDate.getFullYear()}
-                    </div>
-                    <div className="lunar-date">🌙 Âm lịch: {currentLunar}</div>
-                </div>
-                
-                {/* Navigation buttons */}
-                <div className="nav-buttons">
-                    <button 
-                        className="nav-btn"
-                        onClick={isExpanded ? goToPreviousMonth : goToPreviousWeek}
-                        title={isExpanded ? "Tháng trước" : "Tuần trước"}
-                    >
-                        <IoChevronBack />
-                    </button>
-                    <button 
-                        className="nav-btn"
-                        onClick={isExpanded ? goToNextMonth : goToNextWeek}
-                        title={isExpanded ? "Tháng sau" : "Tuần sau"}
-                    >
-                        <IoChevronForward />
-                    </button>
-                </div>
-            </div>
-
-            {/* Week View - Always visible */}
-            <div className="week-view">
-                {weekDays.map((date, index) => {
-                    const isToday = date.getDate() === todayDate &&
-                        date.getMonth() === currentDate.getMonth();
-                    const lunar = getLunarDate(date);
-                    const quote = getQuoteForDate(date);
-                    const dayKey = `week-${date.getTime()}`;
-                    const isHovered = hoveredDay === dayKey;
-                    const isFav = quote && isFavorite ? isFavorite(quote) : false;
-
-                    return (
-                        <div
-                            key={index}
-                            className={`day-item ${isToday ? 'today' : ''} ${quote ? 'has-quote' : ''} ${isFav ? 'favorited' : ''}`}
-                            onMouseEnter={() => setHoveredDay(dayKey)}
-                            onMouseLeave={() => setHoveredDay(null)}
-                            onDoubleClick={() => quote && onToggleFavorite && onToggleFavorite(quote)}
-                            title={quote ? "Double click để lưu/bỏ lưu" : ""}
-                        >
-                            <div className="day-name">{DAY_NAMES[index]}</div>
-                            <div className="day-number">{date.getDate()}</div>
-                            <div className="day-lunar">{lunar}</div>
-                            
-                            {quote && isHovered && (
-                                <QuoteTooltip 
-                                    quote={quote}
-                                    isFavorite={isFav}
-                                    onToggleFavorite={onToggleFavorite}
-                                />
-                            )}
-                        </div>
-                    );
-                })}
-            </div>
-
-            {/* Expand/Collapse Button */}
-            <button 
-                className="expand-btn-simple"
-                onClick={() => setIsExpanded(!isExpanded)}
-                title={isExpanded ? "Thu gọn" : "Xem thêm"}
-            >
-                {isExpanded ? <IoChevronUp /> : <IoChevronDown />}
-            </button>
-
-            {/* Full Month View - Expandable */}
-            <div className={`month-view ${isExpanded ? 'expanded' : ''}`}>
-                <div className="month-grid-header">
-                    {DAY_NAMES.map((dayName, idx) => (
-                        <div key={idx} className="grid-day-name">{dayName}</div>
-                    ))}
-                </div>
-                <div className="month-grid">
-                    {monthDays.map((date, index) => {
-                        if (!date) {
-                            return <div key={index} className="grid-day-item empty"></div>;
-                        }
-
-                        const isToday = date.getDate() === todayDate &&
-                            date.getMonth() === currentDate.getMonth();
-                        const lunar = getLunarDate(date);
-                        const quote = getQuoteForDate(date);
-                        const dayKey = `month-${date.getTime()}`;
-                        const isHovered = hoveredDay === dayKey;
-                        const isFav = quote && isFavorite ? isFavorite(quote) : false;
-
-                        return (
-                            <div
-                                key={index}
-                                className={`grid-day-item ${isToday ? 'today' : ''} ${quote ? 'has-quote' : ''} ${isFav ? 'favorited' : ''}`}
-                                onMouseEnter={() => setHoveredDay(dayKey)}
-                                onMouseLeave={() => setHoveredDay(null)}
-                                onDoubleClick={() => quote && onToggleFavorite && onToggleFavorite(quote)}
-                                title={quote ? "Double click để lưu/bỏ lưu" : ""}
-                            >
-                                <div className="grid-day-number">{date.getDate()}</div>
-                                <div className="grid-day-lunar">{lunar}</div>
-                                
-                                {quote && isHovered && (
-                                    <QuoteTooltip 
-                                        quote={quote}
-                                        isFavorite={isFav}
-                                        onToggleFavorite={onToggleFavorite}
-                                    />
-                                )}
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
-        </div>
+      date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
     );
+  };
+
+  return (
+    <div className="mini-calendar">
+      <div className="mini-calendar-header">
+        <div className="current-date">
+          <div className="solar-date">{currentDate.getDate()}</div>
+          <div className="month-year">
+            {MONTH_NAMES[displayMonth]}, {displayYear}
+          </div>
+          <div className="lunar-date">🌙 Âm lịch: {currentLunar}</div>
+        </div>
+      </div>
+
+      {/* Horizontal Scrollable Week View */}
+      <div
+        className="week-view-horizontal"
+        ref={scrollContainerRef}
+        onScroll={handleScroll}
+      >
+        {extendedDays.map((date, index) => {
+          const isTodayDate = isToday(date);
+          const lunar = getLunarDate(date);
+          const quote = getQuoteForDate(date);
+          const dayKey = `day-${date.getTime()}`;
+          const isHovered = hoveredDay === dayKey;
+          const isFav = quote && isFavorite ? isFavorite(quote) : false;
+
+          return (
+            <div
+              key={index}
+              ref={isTodayDate ? todayRef : null}
+              className={`day-item ${isTodayDate ? "today" : ""} ${quote ? "has-quote" : ""} ${isFav ? "favorited" : ""}`}
+              onMouseEnter={() => setHoveredDay(dayKey)}
+              onMouseLeave={() => setHoveredDay(null)}
+              onDoubleClick={() =>
+                quote && onToggleFavorite && onToggleFavorite(quote)
+              }
+              title={quote ? "Double click để lưu/bỏ lưu" : ""}
+            >
+              <div className="day-name">{DAY_NAMES[date.getDay()]}</div>
+              <div className="day-number">{date.getDate()}</div>
+              <div className="day-lunar">{lunar}</div>
+
+              {quote && isHovered && (
+                <QuoteTooltip
+                  quote={quote}
+                  isFavorite={isFav}
+                  onToggleFavorite={onToggleFavorite}
+                />
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Expand/Collapse Button */}
+      <button
+        className="expand-btn-simple"
+        onClick={() => setIsExpanded(!isExpanded)}
+        title={isExpanded ? "Thu gọn" : "Xem thêm"}
+      >
+        {isExpanded ? <IoChevronUp /> : <IoChevronDown />}
+      </button>
+
+      {/* Full Month View - Expandable */}
+      <div className={`month-view ${isExpanded ? "expanded" : ""}`}>
+        <div className="month-grid-header">
+          {DAY_NAMES.map((dayName, idx) => (
+            <div key={idx} className="grid-day-name">
+              {dayName}
+            </div>
+          ))}
+        </div>
+        <div className="month-grid">
+          {monthDays.map((date, index) => {
+            if (!date) {
+              return <div key={index} className="grid-day-item empty"></div>;
+            }
+
+            const isTodayDate = isToday(date);
+            const lunar = getLunarDate(date);
+            const quote = getQuoteForDate(date);
+            const dayKey = `month-${date.getTime()}`;
+            const isHovered = hoveredDay === dayKey;
+            const isFav = quote && isFavorite ? isFavorite(quote) : false;
+
+            return (
+              <div
+                key={index}
+                className={`grid-day-item ${isTodayDate ? "today" : ""} ${quote ? "has-quote" : ""} ${isFav ? "favorited" : ""}`}
+                onMouseEnter={() => setHoveredDay(dayKey)}
+                onMouseLeave={() => setHoveredDay(null)}
+                onDoubleClick={() =>
+                  quote && onToggleFavorite && onToggleFavorite(quote)
+                }
+                title={quote ? "Double click để lưu/bỏ lưu" : ""}
+              >
+                <div className="grid-day-number">{date.getDate()}</div>
+                <div className="grid-day-lunar">{lunar}</div>
+
+                {quote && isHovered && (
+                  <QuoteTooltip
+                    quote={quote}
+                    isFavorite={isFav}
+                    onToggleFavorite={onToggleFavorite}
+                  />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default MiniCalendar;
