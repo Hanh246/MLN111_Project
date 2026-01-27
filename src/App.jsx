@@ -10,6 +10,9 @@ const LearningPage = lazy(() => import("./pages/LearningPage"));
 const MillionaireGame = lazy(() => import("./pages/MillionaireGame"));
 const TarotPage = lazy(() => import("./pages/TarotPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
+const KarlMarxPage = lazy(() => import("./pages/KarlMarxPage"));
+const EngelsPage = lazy(() => import("./pages/EngelsPage"));
+const LeninPage = lazy(() => import("./pages/LeninPage"));
 
 function App() {
   const [currentView, setCurrentView] = useState("learning"); // 'learning' or 'game'
@@ -87,6 +90,9 @@ function App() {
         {currentView === "learning" && <LearningPage />}
         {currentView === "game" && <MillionaireGame />}
         {currentView === "tarot" && <TarotPage />}
+        {currentView === "marx" && <KarlMarxPage />}
+        {currentView === "engels" && <EngelsPage />}
+        {currentView === "lenin" && <LeninPage />}
       </Suspense>
     </>
   );

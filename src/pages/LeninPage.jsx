@@ -10,14 +10,17 @@ import { ImQuotesLeft } from "react-icons/im";
 import "./BiographyPage.css";
 
 // Import images
-import lenin1920 from "../lenin/Lenin_in_1920.jpg";
-import leninImages from "../lenin/images.jpg";
-import leninPortrait from "../lenin/lenin.jpg";
+import leninImage from "../Lenin/Lenin.jpg";
+import leninImage1 from "../Lenin/tải xuống.jpg";
+import leninImage2 from "../Lenin/tải xuống (1).jpg";
+import leninImage3 from "../Lenin/tải xuống (2).jpg";
+import leninImage4 from "../Lenin/tải xuống (3).jpg";
+import leninImage5 from "../Lenin/tải xuống (4).jpg";
 
 const LeninPage = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const images = [lenin1920, leninImages, leninPortrait];
+  const images = [leninImage, leninImage1, leninImage2, leninImage3, leninImage4, leninImage5];
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length);

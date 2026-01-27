@@ -4,13 +4,14 @@ import { ImQuotesLeft } from 'react-icons/im';
 import './BiographyPage.css';
 
 // Import images
-import engelsPortrait from '../Friedrich Engels/Friedrich_Engels_portrait_(cropped).jpg';
-import engelsPhoto from '../Friedrich Engels/Engels.jpg';
+import engelsImage1 from '../Engels/tải xuống.jpg';
+import engelsImage2 from '../Engels/tải xuống (1).jpg';
+import engelsImage3 from '../Engels/tải xuống (2).jpg';
 
 const EngelsPage = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const images = [engelsPortrait, engelsPhoto];
+  const images = [engelsImage1, engelsImage2, engelsImage3];
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length);

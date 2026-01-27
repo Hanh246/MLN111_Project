@@ -4,14 +4,14 @@ import { ImQuotesLeft } from 'react-icons/im';
 import './BiographyPage.css';
 
 // Import images
-import karlMarx001 from '../Karl Marx/Karl_Marx_001.jpg';
-import marxPic from '../Karl Marx/pic.jpg';
-import marxPic1 from '../Karl Marx/pic1.jpg';
+import macImage from '../KarlMarx/mac.jpg';
+import imagesMarx from '../KarlMarx/images.jpg';
+import mac1 from '../KarlMarx/mac1.jpg';
 
 const KarlMarxPage = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  const images = [karlMarx001, marxPic, marxPic1];
+  const images = [macImage, imagesMarx, mac1];
 
   const nextImage = () => {
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
