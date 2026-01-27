@@ -80,6 +80,18 @@ const TarotPage = () => {
 
   return (
     <div className="tarot-page">
+      {/* Shooting Stars Effect */}
+      <div className="shooting-stars">
+        <div className="shooting-star"></div>
+        <div className="shooting-star"></div>
+        <div className="shooting-star"></div>
+        <div className="shooting-star"></div>
+        <div className="shooting-star"></div>
+        <div className="shooting-star"></div>
+        <div className="shooting-star"></div>
+        <div className="shooting-star"></div>
+      </div>
+
       <div className="tarot-container">
         {/* Header */}
         <div className="tarot-header" data-aos="fade-down">

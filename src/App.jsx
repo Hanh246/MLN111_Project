@@ -1,25 +1,25 @@
-import { Suspense, lazy, useState, useEffect } from 'react'
-import { IoBookSharp, IoGameController, IoInformationCircle, IoClose, IoSparkles } from 'react-icons/io5'
-import AOS from 'aos'
-import 'aos/dist/aos.css'
-import './App.css'
-import CollapsibleMenu from './components/CollapsibleMenu'
+import { Suspense, lazy, useState, useEffect } from "react";
+import { IoClose } from "react-icons/io5";
+import AOS from "aos";
+import "aos/dist/aos.css";
+import "./App.css";
+import CollapsibleMenu from "./components/CollapsibleMenu";
 
 // Lazy load pages for better performance
-const LearningPage = lazy(() => import('./pages/LearningPage'));
-const MillionaireGame = lazy(() => import('./pages/MillionaireGame'));
-const TarotPage = lazy(() => import('./pages/TarotPage'));
-const AboutPage = lazy(() => import('./pages/AboutPage'));
+const LearningPage = lazy(() => import("./pages/LearningPage"));
+const MillionaireGame = lazy(() => import("./pages/MillionaireGame"));
+const TarotPage = lazy(() => import("./pages/TarotPage"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
 
 function App() {
-  const [currentView, setCurrentView] = useState('learning'); // 'learning' or 'game'
+  const [currentView, setCurrentView] = useState("learning"); // 'learning' or 'game'
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   // Initialize AOS
   useEffect(() => {
     AOS.init({
       duration: 600,
-      easing: 'ease-in-out',
+      easing: "ease-in-out",
       once: true,
       offset: 0,
       delay: 0,
@@ -28,7 +28,7 @@ function App() {
 
   // Check if user has seen welcome modal before
   useEffect(() => {
-    const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+    const hasSeenWelcome = localStorage.getItem("hasSeenWelcome");
     if (!hasSeenWelcome) {
       setShowWelcomeModal(true);
     }
@@ -36,7 +36,7 @@ function App() {
 
   const closeWelcomeModal = () => {
     setShowWelcomeModal(false);
-    localStorage.setItem('hasSeenWelcome', 'true');
+    localStorage.setItem("hasSeenWelcome", "true");
   };
 
   const openAboutModal = () => {
@@ -46,7 +46,7 @@ function App() {
   return (
     <>
       {/* Collapsible Menu */}
-      <CollapsibleMenu 
+      <CollapsibleMenu
         currentView={currentView}
         onViewChange={setCurrentView}
         onOpenAbout={openAboutModal}
@@ -56,35 +56,40 @@ function App() {
       {showWelcomeModal && (
         <div className="modal-overlay" onClick={closeWelcomeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close" onClick={closeWelcomeModal} aria-label="Đóng">
+            <button
+              className="modal-close"
+              onClick={closeWelcomeModal}
+              aria-label="Đóng"
+            >
               <IoClose />
             </button>
-            <Suspense fallback={
-              <div className="loading-fallback">
-                <div className="loading-spinner"></div>
-                <p>Đang tải...</p>
-              </div>
-            }>
+            <Suspense
+              fallback={
+                <div className="loading-fallback">
+                  <div className="loading-spinner"></div>
+                  <p>Đang tải...</p>
+                </div>
+              }
+            >
               <AboutPage />
             </Suspense>
           </div>
         </div>
       )}
-
-
-
-      <Suspense fallback={
-        <div className="loading-fallback">
-          <div className="loading-spinner"></div>
-          <p>Đang tải...</p>
-        </div>
-      }>
-        {currentView === 'learning' && <LearningPage />}
-        {currentView === 'game' && <MillionaireGame />}
-        {currentView === 'tarot' && <TarotPage />}
+      <Suspense
+        fallback={
+          <div className="loading-fallback">
+            <div className="loading-spinner"></div>
+            <p>Đang tải...</p>
+          </div>
+        }
+      >
+        {currentView === "learning" && <LearningPage />}
+        {currentView === "game" && <MillionaireGame />}
+        {currentView === "tarot" && <TarotPage />}
       </Suspense>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

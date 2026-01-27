@@ -2,6 +2,12 @@
 // Frontend makes requests to local backend server or production backend
 // Backend handles API key security and Groq API communication
 
+// Development logging utility - only logs in dev mode
+const isDev = import.meta.env.DEV;
+const devLog = (...args) => isDev && console.log(...args);
+const devWarn = (...args) => isDev && console.warn(...args);
+const devError = (...args) => isDev && console.error(...args);
+
 // Configuration constants
 const CONFIG = {
     maxHistoryPairs: 10,
@@ -32,7 +38,7 @@ Luôn lịch sự và khuyến khích người học.`;
         if (this.conversationHistory.length > maxMessages) {
             // Giữ lại N tin nhắn gần nhất
             this.conversationHistory = this.conversationHistory.slice(-maxMessages);
-            console.log(`📝 Đã trim lịch sử xuống còn ${maxMessages} tin nhắn`);
+            devLog(`📝 Đã trim lịch sử xuống còn ${maxMessages} tin nhắn`);
         }
     }
 
@@ -44,7 +50,7 @@ Luôn lịch sự và khuyến khích người học.`;
         const messageKey = userMessage.trim().toLowerCase();
         
         if (this.pendingRequests.has(messageKey)) {
-            console.warn('⚠️ Duplicate request detected, skipping...');
+            devWarn('⚠️ Duplicate request detected, skipping...');
             return {
                 success: false,
                 message: '⏳ Đang xử lý câu hỏi này, vui lòng đợi...',
@@ -63,7 +69,7 @@ Luôn lịch sự và khuyến khích người học.`;
             return response;
 
         } catch (error) {
-            console.error('AI Service Error:', error);
+            devError('AI Service Error:', error);
             return this.handleError(error);
         } finally {
             // Always remove from pending requests
@@ -96,7 +102,7 @@ Luôn lịch sự và khuyến khích người học.`;
 
         try {
             // Call backend proxy (which forwards to Groq API)
-            console.log(`Connecting to backend: ${API_BASE_URL}/api/chat`);
+            devLog(`Connecting to backend: ${API_BASE_URL}/api/chat`);
             const response = await fetch(`${API_BASE_URL}/api/chat`, {
                 method: 'POST',
                 headers: {
@@ -155,13 +161,13 @@ Luôn lịch sự và khuyến khích người học.`;
 
             // Check if we should retry
             if (retryCount >= CONFIG.maxRetries) {
-                console.error(`❌ Đã thử ${CONFIG.maxRetries} lần nhưng vẫn lỗi`);
+                devError(`❌ Đã thử ${CONFIG.maxRetries} lần nhưng vẫn lỗi`);
                 throw error;
             }
 
             // Calculate delay with exponential backoff
             const delay = CONFIG.retryDelay * Math.pow(2, retryCount);
-            console.log(`⏳ Retry lần ${retryCount + 1}/${CONFIG.maxRetries} sau ${delay}ms...`);
+            devLog(`⏳ Retry lần ${retryCount + 1}/${CONFIG.maxRetries} sau ${delay}ms...`);
 
             // Wait before retry
             await new Promise(resolve => setTimeout(resolve, delay));
@@ -202,7 +208,7 @@ Luôn lịch sự và khuyến khích người học.`;
                 error.message = `Lỗi API: ${status}`;
         }
 
-        console.error(`❌ API Error [${error.type}]:`, errorData);
+        devError(`❌ API Error [${error.type}]:`, errorData);
         return error;
     }
 
@@ -249,7 +255,7 @@ Luôn lịch sự và khuyến khích người học.`;
      */
     clearHistory() {
         this.conversationHistory = [];
-        console.log('🗑️ Đã xóa lịch sử hội thoại');
+        devLog('🗑️ Đã xóa lịch sử hội thoại');
     }
 
     /**
