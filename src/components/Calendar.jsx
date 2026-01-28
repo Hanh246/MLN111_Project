@@ -3,7 +3,15 @@ import DayCell from './DayCell';
 import { MONTH_NAMES, DAY_NAMES } from '../utils/constants';
 import './Calendar.css';
 
-function Calendar({ quotes, onMonthChange }) {
+/**
+ * Calendar Component - Optimized with Hash Map Lookup
+ * 
+ * @param {Array} quotes - Array of quote objects
+ * @param {Function} onMonthChange - Callback when month changes
+ * @param {Array} favorites - Array of favorite quote objects
+ * @param {Function} onToggleFavorite - Callback to toggle favorite status
+ */
+function Calendar({ quotes, onMonthChange, favorites = [], onToggleFavorite }) {
     const [currentDate, setCurrentDate] = useState(new Date());
 
     // Notify parent when month changes
@@ -12,6 +20,35 @@ function Calendar({ quotes, onMonthChange }) {
             onMonthChange(currentDate.getMonth() + 1); // 1-12
         }
     }, [currentDate, onMonthChange]);
+
+    // PERFORMANCE OPTIMIZATION: Create Hash Map for O(1) quote lookup
+    // Instead of using .find() in every render (O(N)), we build a lookup table once
+    const quotesMap = useMemo(() => {
+        const map = {};
+        quotes.forEach(quote => {
+            const key = `${quote.month}-${quote.day}`;
+            map[key] = quote;
+        });
+        return map;
+    }, [quotes]);
+
+    // PERFORMANCE OPTIMIZATION: Create Set for O(1) favorite lookup
+    const favoritesSet = useMemo(() => {
+        const set = new Set();
+        favorites.forEach(fav => {
+            // Create unique key from quote properties
+            const key = `${fav.month}-${fav.day}-${fav.author}`;
+            set.add(key);
+        });
+        return set;
+    }, [favorites]);
+
+    // Check if a quote is favorited - O(1) lookup
+    const isFavorite = useCallback((quote) => {
+        if (!quote) return false;
+        const key = `${quote.month}-${quote.day}-${quote.author}`;
+        return favoritesSet.has(key);
+    }, [favoritesSet]);
 
     // Memoize expensive date calculations
     const days = useMemo(() => {
@@ -52,11 +89,13 @@ function Calendar({ quotes, onMonthChange }) {
             currentDate.getFullYear() === today.getFullYear();
     };
 
+    // OPTIMIZED: O(1) quote lookup using hash map
     const getQuoteForDay = useCallback((day) => {
         if (!day) return null;
         const month = currentDate.getMonth() + 1; // 1-12
-        return quotes.find(q => q.month === month && q.day === day);
-    }, [currentDate, quotes]);
+        const key = `${month}-${day}`;
+        return quotesMap[key] || null;
+    }, [currentDate, quotesMap]);
 
     const month = currentDate.getMonth();
     const year = currentDate.getFullYear();
@@ -90,14 +129,19 @@ function Calendar({ quotes, onMonthChange }) {
                     </div>
                 ))}
 
-                {days.map((day, index) => (
-                    <DayCell
-                        key={index}
-                        day={day}
-                        isToday={isToday(day)}
-                        quote={getQuoteForDay(day)}
-                    />
-                ))}
+                {days.map((day, index) => {
+                    const quote = getQuoteForDay(day);
+                    return (
+                        <DayCell
+                            key={index}
+                            day={day}
+                            isToday={isToday(day)}
+                            quote={quote}
+                            isFavorite={quote ? isFavorite(quote) : false}
+                            onToggleFavorite={onToggleFavorite}
+                        />
+                    );
+                })}
             </div>
         </div>
     );

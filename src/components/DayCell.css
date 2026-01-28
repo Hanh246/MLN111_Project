@@ -1,3 +1,6 @@
+/* ============================================
+   DAY CELL - Base Styles
+   ============================================ */
 .day-cell {
     aspect-ratio: 1;
     padding: var(--spacing-3);
@@ -12,6 +15,8 @@
     transition: all var(--transition-base);
     cursor: default;
     min-height: 80px;
+    /* Base z-index for normal state */
+    z-index: 1;
 }
 
 .day-cell.empty {
@@ -19,6 +24,9 @@
     border: none;
 }
 
+/* ============================================
+   QUOTE-ENABLED CELLS
+   ============================================ */
 .day-cell.has-quote {
     cursor: pointer;
     border-color: rgba(212, 165, 116, 0.3);
@@ -32,6 +40,20 @@
     box-shadow: 0 4px 12px rgba(44, 95, 141, 0.2);
 }
 
+/* ============================================
+   Z-INDEX STACKING - CRITICAL FOR TOOLTIP
+   When a cell is hovered or active, it needs to be
+   above other cells to prevent tooltip clipping
+   ============================================ */
+.day-cell.has-quote:hover,
+.day-cell.has-quote.active {
+    /* High z-index to appear above neighboring cells */
+    z-index: 100;
+}
+
+/* ============================================
+   TODAY INDICATOR
+   ============================================ */
 .day-cell.today {
     background: linear-gradient(135deg,
             rgba(44, 95, 141, 0.15) 0%,
@@ -45,13 +67,20 @@
     text-shadow: 0 1px 3px rgba(44, 95, 141, 0.2);
 }
 
+/* ============================================
+   DAY NUMBER
+   ============================================ */
 .day-number {
     font-size: var(--font-size-lg);
     font-weight: 500;
     color: var(--color-text-primary);
     z-index: 1;
+    pointer-events: none; /* Allow clicks to pass through to parent */
 }
 
+/* ============================================
+   FAVORITED STATE
+   ============================================ */
 .day-cell.favorited::before {
     content: '⭐';
     position: absolute;
@@ -59,12 +88,28 @@
     right: 4px;
     font-size: 0.8rem;
     opacity: 0.7;
+    z-index: 2;
+    pointer-events: none;
 }
 
 .day-cell.favorited {
     background: rgba(255, 215, 0, 0.15);
 }
 
+/* ============================================
+   ACTIVE STATE (Mobile/Touch)
+   Indicates cell is currently showing tooltip
+   ============================================ */
+.day-cell.active {
+    background: rgba(44, 95, 141, 0.12);
+    border-color: var(--color-primary);
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(44, 95, 141, 0.25);
+}
+
+/* ============================================
+   RESPONSIVE - MOBILE OPTIMIZATIONS
+   ============================================ */
 @media (max-width: 768px) {
     .day-cell {
         min-height: 60px;
@@ -74,4 +119,40 @@
     .day-number {
         font-size: var(--font-size-base);
     }
+
+    /* Increase touch target size on mobile */
+    .day-cell.has-quote {
+        min-height: 65px;
+    }
+
+    /* Slightly larger hover effect on mobile for better touch feedback */
+    .day-cell.has-quote.active {
+        transform: scale(1.05);
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY - FOCUS STATES
+   ============================================ */
+.day-cell.has-quote:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    z-index: 100;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+/* Subtle pulse animation for today's cell */
+.day-cell.today {
+    animation: pulse 2s ease-in-out infinite;
 }
