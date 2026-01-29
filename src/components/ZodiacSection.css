@@ -1,34 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap');
+
 .zodiac-section {
-  padding: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: 2rem 1rem;
+  min-height: 100vh;
 }
 
-.zodiac-header {
+/* Header */
+.zodiac-intro {
   text-align: center;
   margin-bottom: 3rem;
 }
 
-.zodiac-header h2 {
-  font-size: 2.5rem;
+.zodiac-section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 3rem;
   font-weight: 700;
-  background: linear-gradient(135deg, #a78bfa, #ec4899);
+  background: linear-gradient(135deg, #fbbf24, #ec4899, #8b5cf6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
 }
 
-.zodiac-header p {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.7);
+.section-icon {
+  color: #fbbf24;
+  font-size: 2.5rem;
+  animation: sparkle 2s ease-in-out infinite;
 }
 
+@keyframes sparkle {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.5));
+  }
+  50% {
+    transform: scale(1.2) rotate(180deg);
+    filter: drop-shadow(0 0 20px rgba(251, 191, 36, 1));
+  }
+}
+
+.zodiac-description {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-style: italic;
+}
+
+/* Date Finder */
+.date-finder {
+  max-width: 500px;
+  margin: 0 auto 3rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  border-radius: 20px;
+  text-align: center;
+}
+
+.date-finder h3 {
+  font-family: 'Quicksand', sans-serif;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+}
+
+.date-input-group {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.date-input {
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  font-family: 'Quicksand', sans-serif;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  color: #fff;
+  outline: none;
+  transition: all 0.3s ease;
+  min-width: 200px;
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+}
+
+.date-input:focus {
+  border-color: rgba(139, 92, 246, 0.6);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.search-btn {
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Quicksand', sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+}
+
+.search-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.5);
+}
+
+/* Zodiac Grid */
 .zodiac-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
 }
 
 .zodiac-card {
@@ -36,10 +136,9 @@
   backdrop-filter: blur(10px);
   border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
-  padding: 2rem 1rem;
-  text-align: center;
+  padding: 2rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
   overflow: hidden;
 }
@@ -48,71 +147,120 @@
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--zodiac-color);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  z-index: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s ease;
 }
 
 .zodiac-card:hover::before {
-  opacity: 0.1;
+  left: 100%;
 }
 
 .zodiac-card:hover {
-  transform: translateY(-10px) scale(1.05);
-  border-color: var(--zodiac-color);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  transform: translateY(-10px) scale(1.02);
+  border-color: var(--card-color);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 0 30px var(--card-color);
 }
 
-.zodiac-card > * {
-  position: relative;
-  z-index: 1;
+.card-shine {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.zodiac-card:hover .card-shine {
+  opacity: 1;
+}
+
+.zodiac-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
 }
 
 .zodiac-symbol {
   font-size: 4rem;
-  margin-bottom: 1rem;
-  filter: drop-shadow(0 0 10px var(--zodiac-color));
+  font-weight: bold;
+  line-height: 1;
+  text-shadow: 0 0 20px currentColor;
+  animation: float 3s ease-in-out infinite;
 }
 
-.zodiac-name {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #fff;
-  margin: 0.5rem 0;
-}
-
-.zodiac-dates {
-  font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.8);
-  margin: 0.3rem 0;
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 .zodiac-element {
-  font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.6);
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin: 0.5rem 0 0;
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.zodiac-name {
+  font-family: 'Cinzel', serif;
+  font-size: 1.8rem;
+  color: #fff;
+  margin-bottom: 0.3rem;
+  font-weight: 600;
+}
+
+.zodiac-name-en {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.8rem;
+  font-style: italic;
+}
+
+.zodiac-dates {
+  font-family: 'Quicksand', sans-serif;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+.zodiac-preview {
+  color: rgba(255, 255, 255, 0.75);
+  font-family: 'Quicksand', sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 /* Modal */
-.zodiac-modal-overlay {
+.zodiac-modal {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  padding: 2rem;
   animation: fadeIn 0.3s ease;
-  padding: 1rem;
 }
 
 @keyframes fadeIn {
@@ -124,41 +272,42 @@
   }
 }
 
-.zodiac-modal {
-  background: linear-gradient(135deg, #1e1e2e 0%, #2d2d44 100%);
-  border: 3px solid var(--zodiac-color);
-  border-radius: 25px;
-  max-width: 600px;
+.modal-content {
+  background: linear-gradient(135deg, rgba(26, 11, 46, 0.95), rgba(22, 33, 62, 0.95));
+  backdrop-filter: blur(20px);
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  border-radius: 24px;
+  max-width: 700px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
-  animation: slideUp 0.3s ease;
+  animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
 @keyframes slideUp {
   from {
-    transform: translateY(50px);
     opacity: 0;
+    transform: translateY(50px) scale(0.9);
   }
   to {
-    transform: translateY(0);
     opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
-.modal-close-btn {
+.modal-close {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  font-size: 2rem;
+  top: 1.5rem;
+  right: 1.5rem;
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 1.5rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -167,154 +316,216 @@
   z-index: 10;
 }
 
-.modal-close-btn:hover {
+.modal-close:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: rotate(90deg);
 }
 
 .modal-header {
+  padding: 3rem 2rem;
   text-align: center;
-  padding: 3rem 2rem 2rem;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  border-radius: 22px 22px 0 0;
 }
 
 .modal-symbol {
   font-size: 5rem;
   margin-bottom: 1rem;
-  filter: drop-shadow(0 0 20px var(--zodiac-color));
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 .modal-header h2 {
+  font-family: 'Cinzel', serif;
   font-size: 2.5rem;
-  font-weight: 700;
   color: #fff;
-  margin: 0.5rem 0;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
 .modal-name-en {
+  font-family: 'Quicksand', sans-serif;
   font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(255, 255, 255, 0.9);
   font-style: italic;
-  margin: 0.5rem 0 0;
+  margin-bottom: 0.5rem;
+}
+
+.modal-dates {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
 }
 
 .modal-body {
   padding: 2rem;
 }
 
-.info-row {
+.modal-section {
+  margin-bottom: 2rem;
+}
+
+.modal-section h3 {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 1.3rem;
+  color: #fff;
+  margin-bottom: 1rem;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modal-section p {
+  font-family: 'Quicksand', sans-serif;
+  color: rgba(255, 255, 255, 0.85);
+  line-height: 1.8;
+  font-size: 1rem;
+}
+
+.modal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.element-badge {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  border-radius: 25px;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.planet-name {
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
+  color: #fbbf24 !important;
+}
+
+.traits-text {
+  background: rgba(139, 92, 246, 0.1);
   padding: 1rem;
-  margin-bottom: 0.5rem;
+  border-radius: 12px;
+  border-left: 4px solid #8b5cf6;
+}
+
+.strengths-section {
+  background: rgba(34, 197, 94, 0.1);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-left: 4px solid #22c55e;
+}
+
+.weaknesses-section {
+  background: rgba(239, 68, 68, 0.1);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border-left: 4px solid #ef4444;
+}
+
+.modal-footer {
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.color-indicator {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: 'Quicksand', sans-serif;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.color-box {
+  width: 60px;
+  height: 30px;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Scrollbar */
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
-  border-left: 3px solid var(--zodiac-color);
 }
 
-.info-label {
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.8);
+.modal-content::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.5);
+  border-radius: 10px;
 }
 
-.info-value {
-  color: #fff;
-  text-align: right;
-}
-
-.description-section,
-.traits-section {
-  margin: 2rem 0;
-  padding: 1.5rem;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.description-section h3,
-.traits-section h3 {
-  font-size: 1.3rem;
-  color: var(--zodiac-color);
-  margin: 0 0 1rem;
-}
-
-.description-section p,
-.traits-section p {
-  line-height: 1.8;
-  color: rgba(255, 255, 255, 0.9);
-  margin: 0;
-}
-
-.strengths-weaknesses {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.strengths,
-.weaknesses {
-  padding: 1.5rem;
-  border-radius: 15px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-}
-
-.strengths {
-  border-color: rgba(74, 222, 128, 0.3);
-}
-
-.weaknesses {
-  border-color: rgba(248, 113, 113, 0.3);
-}
-
-.strengths h4,
-.weaknesses h4 {
-  font-size: 1.1rem;
-  margin: 0 0 0.8rem;
-  color: #fff;
-}
-
-.strengths p,
-.weaknesses p {
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.8);
-  margin: 0;
-  font-size: 0.95rem;
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.7);
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .zodiac-section {
-    padding: 1rem;
-  }
-
-  .zodiac-header h2 {
+  .zodiac-section-title {
     font-size: 2rem;
   }
 
   .zodiac-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
   }
 
   .zodiac-card {
-    padding: 1.5rem 0.8rem;
+    padding: 1.5rem;
   }
 
   .zodiac-symbol {
     font-size: 3rem;
   }
 
-  .strengths-weaknesses {
-    grid-template-columns: 1fr;
+  .modal-content {
+    margin: 1rem;
+    max-height: 85vh;
+  }
+
+  .modal-header {
+    padding: 2rem 1.5rem;
+  }
+
+  .modal-header h2 {
+    font-size: 2rem;
   }
 
   .modal-body {
     padding: 1.5rem;
   }
 
-  .modal-header h2 {
-    font-size: 2rem;
+  .modal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .date-input-group {
+    flex-direction: column;
+  }
+
+  .date-input {
+    width: 100%;
+  }
+
+  .search-btn {
+    width: 100%;
+    justify-content: center;
   }
 }

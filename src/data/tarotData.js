@@ -1,4 +1,7 @@
 // Tarot Card Data - 22 Major Arcana
+import minorArcana from './minorArcana';
+
+// Tarot Card Data - 22 Major Arcana + 56 Minor Arcana
 export const tarotCards = [
   // Major Arcana
   {
@@ -265,6 +268,7 @@ export const tarotCards = [
     love: "Mối quan hệ hoàn hảo, viên mãn",
     career: "Đạt đỉnh cao, thành tựu lớn",
   },
+  ...minorArcana
 ];
 
 export default tarotCards;

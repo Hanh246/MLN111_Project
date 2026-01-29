@@ -2,7 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import "./TarotCard.css";
 
-const TarotCard = ({ card, position, isRevealed, onReveal }) => {
+const TarotCard = ({ card, position, isRevealed, onReveal, isReversed = false, category = 'luck' }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
   const handleClick = () => {
@@ -28,12 +28,18 @@ const TarotCard = ({ card, position, isRevealed, onReveal }) => {
   };
 
   const getMeaning = () => {
-    switch (position) {
-      case 0:
+    // If reversed, show reversed meaning
+    if (isReversed) {
+      return card.reversed;
+    }
+    
+    // Otherwise, show contextual meaning based on category
+    switch (category) {
+      case 'luck':
         return card.luck;
-      case 1:
+      case 'love':
         return card.love;
-      case 2:
+      case 'career':
         return card.career;
       default:
         return card.upright;
@@ -66,7 +72,7 @@ const TarotCard = ({ card, position, isRevealed, onReveal }) => {
               <img
                 src={card.image}
                 alt={card.nameVi}
-                className="card-image"
+                className={`card-image ${isReversed ? 'reversed' : ''}`}
                 onError={(e) => {
                   e.target.style.display = "none";
                   e.target.nextSibling.style.display = "block";
@@ -83,6 +89,11 @@ const TarotCard = ({ card, position, isRevealed, onReveal }) => {
       {/* Caption appears below card when revealed */}
       {isRevealed && (
         <div className="card-caption" data-aos="fade-up">
+          {isReversed && (
+            <div className="reversed-indicator">
+              ⚠️ Bài Ngược
+            </div>
+          )}
           <h3 className="card-name">{card.nameVi}</h3>
           <p className="card-name-en">{card.name}</p>
           <div className="card-meaning">
@@ -100,6 +111,7 @@ TarotCard.propTypes = {
     nameVi: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     upright: PropTypes.string,
+    reversed: PropTypes.string,
     luck: PropTypes.string,
     love: PropTypes.string,
     career: PropTypes.string,
@@ -107,6 +119,8 @@ TarotCard.propTypes = {
   position: PropTypes.number.isRequired,
   isRevealed: PropTypes.bool,
   onReveal: PropTypes.func,
+  isReversed: PropTypes.bool,
+  category: PropTypes.string,
 };
 
 export default TarotCard;

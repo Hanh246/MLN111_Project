@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap');
+
 .tarot-page {
   min-height: 100vh;
   background: linear-gradient(135deg, #1a0b2e 0%, #16213e 50%, #0f3460 100%);
@@ -34,15 +36,37 @@
   z-index: 1;
 }
 
-.tarot-header {
+/* Main Header - Always visible at top */
+.main-header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 2rem;
+  padding: 2rem 1rem 0;
+  position: relative;
 }
 
-.tarot-title {
-  font-size: 3rem;
+.main-header::before {
+  content: '✦';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 2rem;
+  color: rgba(168, 85, 247, 0.4);
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+.main-title {
+  font-family: 'Cinzel', serif;
+  font-size: 4rem;
   font-weight: 800;
-  background: linear-gradient(135deg, #a78bfa, #ec4899, #f472b6);
+  background: linear-gradient(135deg, 
+    #fbbf24 0%,
+    #f59e0b 20%,
+    #ec4899 40%,
+    #a855f7 60%,
+    #6366f1 80%,
+    #8b5cf6 100%);
+  background-size: 200% 200%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -50,28 +74,154 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
-  text-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+  gap: 1.5rem;
+  letter-spacing: 0.05em;
+  position: relative;
+  animation: gradientShift 8s ease infinite;
+  filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.4)) 
+          drop-shadow(0 0 40px rgba(236, 72, 153, 0.3));
 }
 
-.title-icon {
-  animation: sparkleRotate 3s ease-in-out infinite;
+.main-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  font-style: italic;
+  letter-spacing: 0.08em;
+  text-shadow: 0 2px 20px rgba(168, 85, 247, 0.5);
+  position: relative;
+  padding: 0.5rem 0;
 }
 
-@keyframes sparkleRotate {
-  0%,
-  100% {
-    transform: rotate(0deg) scale(1);
+.main-subtitle::before,
+.main-subtitle::after {
+  content: '✧';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgba(168, 85, 247, 0.6);
+  font-size: 1.2rem;
+  animation: fadeInOut 2s ease-in-out infinite;
+}
+
+.main-subtitle::before {
+  left: -2rem;
+  animation-delay: 0s;
+}
+
+.main-subtitle::after {
+  right: -2rem;
+  animation-delay: 1s;
+}
+
+/* Section Header - Below tabs, changes based on active tab */
+.section-header {
+  text-align: center;
+  margin: 2rem 0 3rem;
+  padding: 1.5rem 1rem;
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.section-title {
+  font-family: 'Cinzel', serif;
+  font-size: 3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ec4899, #a855f7, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.03em;
+  filter: drop-shadow(0 0 15px rgba(168, 85, 247, 0.3));
+}
+
+.section-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-style: italic;
+  letter-spacing: 0.05em;
+}
+
+/* Keep old tarot-header for backward compatibility but hide it */
+.tarot-header {
+  display: none;
+}
+
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.4;
+    transform: translateX(-50%) scale(1);
   }
   50% {
-    transform: rotate(180deg) scale(1.2);
+    opacity: 1;
+    transform: translateX(-50%) scale(1.3);
   }
+}
+
+/* Old classes - hidden for backward compatibility */
+.tarot-title {
+  display: none;
 }
 
 .tarot-subtitle {
-  font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.8);
-  font-style: italic;
+  display: none;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.title-icon {
+  font-size: 3rem;
+  color: #fbbf24;
+  animation: sparkleRotate 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.6));
+}
+
+@keyframes sparkleRotate {
+  0%, 100% {
+    transform: rotate(0deg) scale(1);
+    filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.6));
+  }
+  25% {
+    transform: rotate(90deg) scale(1.1);
+    filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.8));
+  }
+  50% {
+    transform: rotate(180deg) scale(1.2);
+    filter: drop-shadow(0 0 25px rgba(251, 191, 36, 1));
+  }
+  75% {
+    transform: rotate(270deg) scale(1.1);
+    filter: drop-shadow(0 0 20px rgba(251, 191, 36, 0.8));
+  }
+}
+
+@keyframes fadeInOut {
+  0%, 100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 /* Tab Switcher */
@@ -310,10 +460,34 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .tarot-title {
-    font-size: 2rem;
+  .main-title {
+    font-size: 2.5rem;
     flex-direction: column;
     gap: 0.5rem;
+  }
+
+  .title-icon {
+    font-size: 2.5rem;
+  }
+
+  .main-subtitle {
+    font-size: 1.2rem;
+  }
+
+  .main-subtitle::before {
+    left: -1.5rem;
+  }
+
+  .main-subtitle::after {
+    right: -1.5rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
   }
 
   .tab-switcher {

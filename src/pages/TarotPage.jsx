@@ -24,13 +24,28 @@ const TarotPage = () => {
     if (lastReading === today && savedCards) {
       setHasDrawnToday(true);
       const cards = JSON.parse(savedCards);
-      setSelectedCards(cards);
+      
+      // Backward compatibility: convert old format to new format
+      const formattedCards = cards.map((card, index) => {
+        if (card.data) {
+          return card; // Already in new format
+        }
+        // Old format: convert to new format
+        return {
+          data: card,
+          isReversed: false,
+          category: ['luck', 'love', 'career'][index]
+        };
+      });
+      
+      setSelectedCards(formattedCards);
       setRevealedCards([true, true, true]);
     }
   };
 
   const getRandomCards = () => {
     const deck = [...tarotCards];
+    const categories = ['luck', 'love', 'career'];
     
     // Fisher-Yates shuffle for unbiased randomization
     for (let i = deck.length - 1; i > 0; i--) {
@@ -38,8 +53,12 @@ const TarotPage = () => {
       [deck[i], deck[j]] = [deck[j], deck[i]];
     }
     
-    // Return first 3 cards (guaranteed unique)
-    return [deck[0], deck[1], deck[2]];
+    // Return first 3 cards with reversed status and category
+    return [0, 1, 2].map(index => ({
+      data: deck[index],
+      isReversed: Math.random() < 0.5, // 50% chance of being reversed
+      category: categories[index]
+    }));
   };
 
   const handleDrawCards = () => {
@@ -93,14 +112,14 @@ const TarotPage = () => {
       </div>
 
       <div className="tarot-container">
-        {/* Header */}
-        <div className="tarot-header" data-aos="fade-down">
-          <h1 className="tarot-title">
+        {/* Main Header - Always visible */}
+        <div className="main-header" data-aos="fade-down">
+          <h1 className="main-title">
             <IoSparkles className="title-icon" />
-            Bói Bài Tarot
+            Bói Toán Huyền Bí
             <IoSparkles className="title-icon" />
           </h1>
-          <p className="tarot-subtitle">Khám phá vận mệnh qua những lá bài huyền bí</p>
+          <p className="main-subtitle">Khám phá vận mệnh và tương lai của bạn</p>
         </div>
 
         {/* Tab Switcher */}
@@ -118,6 +137,14 @@ const TarotPage = () => {
             ⭐ Cung Hoàng Đạo
           </button>
         </div>
+
+        {/* Section Header - Changes based on tab */}
+        {activeTab === 'tarot' && (
+          <div className="section-header" data-aos="fade-up">
+            <h2 className="section-title">Bói Bài Tarot</h2>
+            <p className="section-subtitle">Khám phá vận mệnh qua những lá bài huyền bí</p>
+          </div>
+        )}
 
         {/* Content */}
         {activeTab === 'tarot' ? (
@@ -165,10 +192,12 @@ const TarotPage = () => {
                   {selectedCards.map((card, index) => (
                     <TarotCard
                       key={index}
-                      card={card}
+                      card={card.data}
                       position={index}
                       isRevealed={revealedCards[index]}
                       onReveal={() => handleRevealCard(index)}
+                      isReversed={card.isReversed}
+                      category={card.category}
                     />
                   ))}
                 </div>

@@ -36,7 +36,7 @@ const MENU_CONFIG = [
     id: 'tarot',
     type: 'view',
     icon: IoSparkles,
-    label: 'Tarot'
+    label: 'Bói toán huyền bí'
   },
   {
     id: 'philosophers',
