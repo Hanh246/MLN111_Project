@@ -33,12 +33,6 @@ const MENU_CONFIG = [
     label: 'Trò chơi'
   },
   {
-    id: 'tarot',
-    type: 'view',
-    icon: IoSparkles,
-    label: 'Bói toán huyền bí'
-  },
-  {
     id: 'philosophers',
     type: 'dropdown',
     icon: IoPersonSharp,
