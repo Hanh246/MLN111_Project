@@ -58,7 +58,7 @@ function LearningPage() {
                 {/* Header with Title and Clock */}
                 <header className="learning-header">
                     <h1 className="learning-title">365 Ngày Với Mác-Lênin</h1>
-                    <p className="learning-subtitle">Nhóm 11</p>
+                    <p className="learning-subtitle">Nhóm 5</p>
                     <Clock />
                 </header>
 

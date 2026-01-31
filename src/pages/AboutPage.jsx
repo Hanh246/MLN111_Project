@@ -75,11 +75,11 @@ function AboutPage() {
 
                     {/* Team Members */}
                     <section className="about-section team-section">
-                        <h2>👨‍💻 Nhóm 11 - Thành Viên</h2>
+                        <h2>👨‍💻 Nhóm 5 - Thành Viên</h2>
                         <div className="team-grid">
                             <div className="team-member">
                                 <div className="member-avatar">👨‍💻</div>
-                                <h3>Phạm Duy Hưng</h3>
+                                <h3>Nguyễn Xuân Hanh</h3>
                                 <p className="member-role">Team Leader & Developer</p>
                                 <p className="member-contribution">
                                     Quản lý dự án, phát triển tính năng chính,
@@ -88,7 +88,7 @@ function AboutPage() {
                             </div>
                             <div className="team-member">
                                 <div className="member-avatar">🎨</div>
-                                <h3>Phạm Thế Sơn</h3>
+                                <h3>Em Long, Em Linh</h3>
                                 <p className="member-role">UI/UX Designer & Developer</p>
                                 <p className="member-contribution">
                                     Thiết kế giao diện người dùng,
@@ -97,7 +97,7 @@ function AboutPage() {
                             </div>
                             <div className="team-member">
                                 <div className="member-avatar">📚</div>
-                                <h3>Ngô Trí Bình</h3>
+                                <h3>Giang, Nhi, Minh Anh</h3>
                                 <p className="member-role">Content & Testing</p>
                                 <p className="member-contribution">
                                     Sưu tầm nội dung triết học,
